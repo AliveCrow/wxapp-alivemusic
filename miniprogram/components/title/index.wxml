@@ -1,0 +1,6 @@
+		<view class="recommend-title">
+			<text class="title-text">
+        <slot></slot>
+      </text>
+			<text hidden="{{src===''}}"  class="title-more">更多</text>
+		</view>

@@ -1,0 +1,23 @@
+/* components/scrollItem/index.wxss */
+.scroll-item {
+  height: 150px;
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.scroll-image {
+  height: 150px;
+  width: 110px;
+  border-radius: 5px;
+}
+
+.img-sub {
+  position: absolute;
+  bottom: 0;
+  color: #fff;
+  right: 0;
+  font-size: 8px;
+  margin-bottom: 4px;
+  margin-right: 4px;
+  font-weight: 300;
+}

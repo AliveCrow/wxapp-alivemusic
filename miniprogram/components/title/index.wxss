@@ -1,0 +1,15 @@
+/* components/title/index.wxss */
+.recommend-title {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+.title-text {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.title-more {
+  color: #c0c0c0;
+  font-weight: 300;
+}

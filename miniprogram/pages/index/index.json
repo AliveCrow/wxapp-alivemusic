@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "vx-title":"../../components/title/index",
+    "songItem":"../../components/songItem/index",
+    "scrollItem":"../../components/scrollItem/index"
+  }
+}

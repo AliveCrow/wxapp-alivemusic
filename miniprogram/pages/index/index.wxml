@@ -1,0 +1,60 @@
+<!--miniprogram/pages/index/index.wxml-->
+<view id="container">
+	<view class="search">搜索</view>
+	<view class="recommend-wapper">
+	<vx-title >歌曲推荐</vx-title>
+		<!-- 歌曲推荐 -->
+		<view class="recommend-content" wx:for="{{songRecommend}}" wx:key='index'>
+			<songItem  songmid='{{item.mid}}'></songItem>
+		</view>
+
+		<!-- 热门歌单 -->
+		<vx-title src='123'>热门歌单</vx-title>
+		<scroll-view enhanced='true' show-scrollbar='true' class="scroll-view-x" scroll-x='true'>
+			<blockquote wx:for='{{hotList}}' wx:key="index">
+				<scrollItem content='{{item}}' ></scrollItem>
+			</blockquote>
+		</scroll-view>
+
+		<!-- 排行榜 -->
+		<view class="rank">
+			<vx-title src='123'>排行榜</vx-title>
+			<view class="rank-content">
+				<view style="width:60%;margin:0 10px">
+					<view style='font-size:16px'>巅峰榜</view>
+					<text class="rank-song">321321312</text>
+					<text class="rank-song">1231231</text>
+					<text class="rank-song">歌3</text>
+				</view>
+				<image mode="aspectFit" class="rank-image" src="http://qiniu.dreamsakula.top/images/20201205170221.png"></image>
+			</view>
+			<view class="rank-content">
+				<view style="width:60%;margin:0 10px">
+					<view style='font-size:16px'>巅峰榜</view>
+					<text class="rank-song">321321312</text>
+					<text class="rank-song">1231231</text>
+					<text class="rank-song">歌3</text>
+				</view>
+				<image mode="aspectFit" class="rank-image" src="http://qiniu.dreamsakula.top/images/20201205170221.png"></image>
+			</view>
+			<view class="rank-content">
+				<view style="width:60%;margin:0 10px">
+					<view style='font-size:16px'>巅峰榜</view>
+					<text class="rank-song">321321312</text>
+					<text class="rank-song">1231231</text>
+					<text class="rank-song">歌3</text>
+				</view>
+				<image mode="aspectFit" class="rank-image" src="http://qiniu.dreamsakula.top/images/20201205170221.png"></image>
+			</view>
+			<view class="rank-content">
+				<view style="width:60%;margin:0 10px">
+					<view style='font-size:16px'>巅峰榜</view>
+					<text class="rank-song">321321312</text>
+					<text class="rank-song">1231231</text>
+					<text class="rank-song">歌3</text>
+				</view>
+				<image mode="aspectFit" class="rank-image" src="http://qiniu.dreamsakula.top/images/20201205170221.png"></image>
+			</view>
+		</view>
+	</view>
+</view>

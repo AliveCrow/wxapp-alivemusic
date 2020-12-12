@@ -1,0 +1,8 @@
+<!--components/scrollItem/index.wxml-->
+<view class="scroll-item">
+  <view style="position:relative">
+    <image mode="aspectFit" class="scroll-image" src='http://qiniu.dreamsakula.top/images/20201205170221.png'></image>
+    <view class="img-sub">1800.2万</view>
+  </view>
+  <text class='songlist-detail'>dsad</text>
+</view>
