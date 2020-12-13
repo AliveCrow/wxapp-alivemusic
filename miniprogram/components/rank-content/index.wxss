@@ -1,0 +1,36 @@
+/* components/rank-content/index.wxss */
+
+
+.rank {
+  display: flex;
+  flex-direction: column;
+}
+
+.rank-content {
+  height: 120px;
+  background-color: #efefef;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 5px 0;
+}
+
+.rank-image {
+  height: 120px;
+  min-width: 120px;
+  width: 120px;
+}
+
+.rank-song {
+  display: block;
+  color: #9c9c9c;
+  font-weight: 300;
+  font-size: 12px;
+  margin: 2px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

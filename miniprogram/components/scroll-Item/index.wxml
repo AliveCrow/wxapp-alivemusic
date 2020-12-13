@@ -1,0 +1,8 @@
+<!--components/scrollItem/index.wxml-->
+<view class="scroll-item">
+  <view style="position:relative">
+    <image mode="aspectFit" class="scroll-image" src='{{content.cover}}'></image>
+    <view class="img-sub">{{content.listen_num}}</view>
+  </view>
+  <view class='songlist-detail'>{{content.title}}</view>
+</view>

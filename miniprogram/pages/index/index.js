@@ -1,38 +1,48 @@
 // miniprogram/pages/index/index.js
+const app = getApp()
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    songRecommend:[],
-    hotList:[]
+    hotList: [],
+    rank: []
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log('onLoad');
     let _this = this
     //推荐歌曲
     wx.request({
-      url: 'http://localhost:3300/new/songs?type=0',
+      url: app.globalData.api.dev + '/new/songs?type=0',
       header: {
         'content-type': 'application/json' // 默认值
       },
-      success (res) {
+      success(res) {
         _this.setData({
-          songRecommend:res.data.data.list.slice(0,6)
+          songRecommend: res.data.data.list.slice(0, 6)
         })
       }
     })
     //热门歌单
     wx.request({
-      url: 'http://localhost:3300/recommend/playlist/u',
-      success:(res)=>{
+      url: app.globalData.api.dev + '/recommend/playlist/u',
+      success: (res) => {
         this.setData({
-          hotList:res.data.data.list.slice(0,6)
+          hotList: res.data.data.list.slice(0, 6)
+        })
+      }
+    })
+    //排行榜 -
+    wx.request({
+      url: app.globalData.api.dev + '/top/category',
+      success: (res) => {
+        //选择巅峰榜
+        this.setData({
+          rank: res.data.data[0].list.slice(0, 5)
         })
       }
     })
@@ -42,16 +52,14 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    console.log('onReady');
-    
+
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    console.log('onShow');
-    
+
   },
 
   /**
@@ -88,7 +96,47 @@ Page({
   onShareAppMessage: function () {
 
   },
-  imageLoadOver(){
+  imageLoadOver() {
     console.log('imageLoadOver');
+  },
+  goSearch() {
+    wx.navigateTo({
+      url: '/pages/search/index',
+    })
+  },
+  // play(e) {
+  //   let songmid = e.target.dataset.songmid
+  //   wx.request({
+  //     url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
+  //     success: res => {
+  //       if (res.data.data === {}) {
+  //         wx.showToast({
+  //           title: '歌曲需要开通绿钻或者购买',
+  //           icon: 'fail',
+  //           duration: 2000
+  //         })
+  //         return 
+  //       }
+  //       let clickSong = this.data.songRecommend.find(song=>song.mid===songmid)
+  //       const backgroundAudioManager = wx.getBackgroundAudioManager()
+  //       backgroundAudioManager.title = clickSong.name
+  //       backgroundAudioManager.epname = clickSong.album.name
+  //       backgroundAudioManager.singer = clickSong.singer[0]
+  //       backgroundAudioManager.coverImgUrl =`https://y.gtimg.cn/music/photo_new/T002R300x300M000${clickSong.album.mid}.jpg`
+  //       // 设置了 src 之后会自动播放
+  //       backgroundAudioManager.src = res.data.data[songmid]
+    
+  //     },  
+  //     fail: error => {
+  //       wx.showToast({
+  //         title: '接口错误',
+  //         icon: 'fail',
+  //         duration: 2000
+  //       })
+  //     }
+  //   })
+
+  // }
+  createAudio: function(e){
   }
 })

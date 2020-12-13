@@ -2,6 +2,7 @@
   "usingComponents": {
     "vx-title":"../../components/title/index",
     "songItem":"../../components/songItem/index",
-    "scrollItem":"../../components/scrollItem/index"
+    "scrollItem":"../../components/scroll-Item/index",
+    "rankItem":"../../components/rank-content/index"
   }
 }

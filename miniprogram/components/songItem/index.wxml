@@ -1,11 +1,11 @@
 <!--components/songItem/index.wxml-->
-			<view class="song-item">
-				<view style="display:flex;align-items:center">
-					<image class="song-image" src="{{album_img}}" mode="aspectFit"></image>
-					<view class='song-detail'>
-						<text class="song-name">{{name}}</text>
-						<text class="song-album">{{album}}</text>
-					</view>
-				</view>
-				<image class="more" src="../../assets/more.svg"></image>
-			</view>
+<view class="song-item" bindtap="onTap">
+	<view style="display:flex;align-items:center">
+		<image class="song-image" src="{{album_img}}" mode="aspectFit"></image>
+		<view class='song-detail'>
+			<text class="song-name">{{name}}</text>
+			<text class="song-album">{{album}}</text>
+		</view>
+	</view>
+	<image class="more" src="../../assets/more.svg"></image>
+</view>

@@ -1,4 +1,5 @@
 //app.js
+import {api} from './ulits/api'
 App({
   onLaunch: function () {
     if (!wx.cloud) {
@@ -10,6 +11,8 @@ App({
       })
     }
 
-    this.globalData = {}
+    this.globalData = {
+      api:api
+    }
   }
 })

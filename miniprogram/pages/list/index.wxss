@@ -1,0 +1,7 @@
+/* pages/list/index.wxss */
+
+.list-container{}
+.list-title{
+  margin:10px;
+  text-align: center;
+}
