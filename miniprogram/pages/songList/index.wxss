@@ -1,1 +1,25 @@
 /* pages/songList/index.wxss */
+
+.song-list-container{
+  margin: 10px;
+}
+.song-list-header{
+  display:flex;
+  align-items: center;
+}
+.song-image {
+  height:100px;
+  width: 100px;
+  border-radius: 5px;
+  margin: 5px;
+  flex: 0 0  100px;
+}
+.song-list-dec{
+  align-self: flex-end;
+  margin-bottom: 10px;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp:4;
+  overflow: hidden;
+}

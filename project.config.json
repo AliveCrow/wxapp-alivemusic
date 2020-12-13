@@ -66,6 +66,12 @@
         {
           "name": "pages/list/index",
           "pathName": "pages/list/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/songList/index",
+          "pathName": "pages/songList/index",
           "scene": null
         }
       ]

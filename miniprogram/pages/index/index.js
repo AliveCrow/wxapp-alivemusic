@@ -104,5 +104,10 @@ Page({
       url: '/pages/search/index',
     })
   },
+  detail(e){
+    wx.navigateTo({
+      url: `/pages/songList/index?content_id=${e.currentTarget.dataset.content_id}`
+    })
+  }
 
 })

@@ -1,18 +1,25 @@
 // pages/songList/index.js
+const app = getApp()
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    list_id:Number,
+    desc:String,
+    pic:String,
+    songList:Array
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.setData({
+      list_id:options.content_id
+    })
+    this.init()
   },
 
   /**
@@ -26,7 +33,6 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
   },
 
   /**
@@ -62,5 +68,18 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+
+  init(){
+    wx.request({
+      url: app.globalData.api.dev+`/songlist?id=${this.data.list_id}`,
+      success:res=>{
+        this.setData({
+          desc:res.data.data.desc,
+          pic:res.data.data.logo,
+          songList:res.data.data.songlist.slice(0,100)
+        })
+      }
+    })
   }
 })
