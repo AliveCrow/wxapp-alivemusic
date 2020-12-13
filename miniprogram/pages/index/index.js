@@ -104,39 +104,5 @@ Page({
       url: '/pages/search/index',
     })
   },
-  // play(e) {
-  //   let songmid = e.target.dataset.songmid
-  //   wx.request({
-  //     url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
-  //     success: res => {
-  //       if (res.data.data === {}) {
-  //         wx.showToast({
-  //           title: '歌曲需要开通绿钻或者购买',
-  //           icon: 'fail',
-  //           duration: 2000
-  //         })
-  //         return 
-  //       }
-  //       let clickSong = this.data.songRecommend.find(song=>song.mid===songmid)
-  //       const backgroundAudioManager = wx.getBackgroundAudioManager()
-  //       backgroundAudioManager.title = clickSong.name
-  //       backgroundAudioManager.epname = clickSong.album.name
-  //       backgroundAudioManager.singer = clickSong.singer[0]
-  //       backgroundAudioManager.coverImgUrl =`https://y.gtimg.cn/music/photo_new/T002R300x300M000${clickSong.album.mid}.jpg`
-  //       // 设置了 src 之后会自动播放
-  //       backgroundAudioManager.src = res.data.data[songmid]
-    
-  //     },  
-  //     fail: error => {
-  //       wx.showToast({
-  //         title: '接口错误',
-  //         icon: 'fail',
-  //         duration: 2000
-  //       })
-  //     }
-  //   })
 
-  // }
-  createAudio: function(e){
-  }
 })

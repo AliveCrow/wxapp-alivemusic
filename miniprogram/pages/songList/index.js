@@ -1,12 +1,11 @@
-// miniprogram/pages/search/index.js
-const app = getApp()
+// pages/songList/index.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    hotSearch:Object
+
   },
 
   /**
@@ -14,7 +13,6 @@ Page({
    */
   onLoad: function (options) {
 
-    this.getHotSearch()
   },
 
   /**
@@ -64,36 +62,5 @@ Page({
    */
   onShareAppMessage: function () {
 
-  },
-  getHotSearch(){
-    wx.request({
-      url: app.globalData.api.dev+'/search/hot',
-      success:(res)=>{
-        this.setData({
-          hotSearch:res.data.data
-        })
-      }
-    })
-  },
-  //搜索
-  search(e){
-    let k 
-    if(JSON.stringify(e.target.dataset) == "{}"){
-      k = e.detail.value
-    }else{
-      k = e.target.dataset.k
-    }
-    wx.request({
-      url: app.globalData.api.dev+`/search?key=${k}`,
-      success:(res)=>{
-        wx.navigateTo({
-          url: `/pages/list/index?keyword=${k}`,
-          success:(r)=>{
-            r.eventChannel.emit('searchResult',{searchResult:res.data.data.list})
-          }
-        })
-      }
-    })
-  
   }
 })

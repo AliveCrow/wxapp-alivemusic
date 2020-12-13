@@ -18,7 +18,6 @@ Page({
     const _this = this
     const eventChannel = this.getOpenerEventChannel()
     eventChannel.on('searchResult', function(data) {
-      console.log(data.searchResult);
       _this.setData({
         searchResult:data.searchResult,
         keyword:options.keyword
@@ -69,7 +68,6 @@ Page({
     wx.request({
       url: app.globalData.api.dev+`/search?key=${this.data.keyword}&pageNo=${pageNo}`,
       success:(res)=>{
-        console.log(this.data.searchResult);
         let arr =  this.data.searchResult.concat(res.data.data.list)
         this.setData({
           searchResult:arr

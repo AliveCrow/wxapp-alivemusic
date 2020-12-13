@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/search/index",
-    "pages/list/index"
+    "pages/list/index",
+    "pages/songList/index"
   ],
   "requiredBackgroundModes": ["audio", "location"],
   "window": {

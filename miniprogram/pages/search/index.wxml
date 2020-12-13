@@ -1,6 +1,6 @@
 <!--miniprogram/pages/search/index.wxml-->
 <view>
-	<input class="search" confirm-type="search" placeholder="搜索"></input>
+	<input bindconfirm="search" focus="true"  class="search" confirm-type="search" placeholder="搜索"></input>
 	<view class="hot-search">
 		<text wx:for="{{hotSearch}}"  bindtap="search" data-k="{{item.k}}"  wx:key="index">{{item.k}}</text>
 	</view>
