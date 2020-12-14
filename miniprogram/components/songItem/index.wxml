@@ -1,7 +1,7 @@
 <!--components/songItem/index.wxml-->
 <view class="song-item" bindtap="onTap">
 	<view style="display:flex;align-items:center">
-		<image class="song-image" src="{{album_img}}" mode="aspectFit"></image>
+		<image lazy-load="true" class="song-image" src="{{album_img}}" mode="aspectFit"></image>
 		<view class='song-detail'>
 			<text class="song-name">{{name}}</text>
 			<text class="song-album">{{album}}</text>

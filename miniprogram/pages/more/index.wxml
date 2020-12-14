@@ -1,0 +1,6 @@
+<!--pages/more/index.wxml-->
+<view class="more-container">
+  <blockquote class="song-list-more" wx:for='{{hotList}}' wx:key="index" bindtap="detail" data-content_id="{{item.content_id}}">
+				<scrollItem  content='{{item}}'></scrollItem>
+    </blockquote>
+</view>

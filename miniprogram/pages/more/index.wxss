@@ -1,0 +1,10 @@
+/* pages/more/index.wxss */
+.more-container{
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ flex-wrap: wrap;
+}
+.song-list-more{
+  height:25vh!important
+}

@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "songItem":"../../components/songItem/index"
+
+  }
+}

@@ -2,5 +2,5 @@
 			<text class="title-text">
         <slot></slot>
       </text>
-			<text hidden="{{src===''}}"  class="title-more">更多</text>
+			<navigator hidden="{{url===''}}" url="{{url}}"  class="title-more">更多</navigator>
 		</view>

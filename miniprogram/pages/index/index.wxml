@@ -7,7 +7,7 @@
 		<songItem  wx:for="{{songRecommend}}" wx:key='index' songmid='{{item.mid}}'></songItem>
 
 		<!-- 热门歌单 -->
-		<vx-title src='123'>热门歌单</vx-title>
+		<vx-title url='/pages/more/index'>热门歌单</vx-title>
 		<scroll-view enhanced='true' show-scrollbar='true' class="scroll-view-x" scroll-x='true'>
 			<blockquote wx:for='{{hotList}}' wx:key="index" bindtap="detail" data-content_id="{{item.content_id}}">
 				<scrollItem content='{{item}}'></scrollItem>

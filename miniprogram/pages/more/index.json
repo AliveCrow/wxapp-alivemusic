@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "scrollItem":"../../components/scroll-Item/index"
+  },
+  "navigationBarTitleText":"热门歌单"
+}

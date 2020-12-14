@@ -1,4 +1,5 @@
-// pages/songList/index.js
+// pages/rank/index.js
+let pageNo = 1;
 const app = getApp()
 Page({
 
@@ -6,11 +7,9 @@ Page({
    * 页面的初始数据
    */
   data: {
-    list_id:Number,
-    title:String,
-    desc:String,
-    pic:String,
-    songList:Array
+    rankData:[],
+    list:[],
+    topId:String
   },
 
   /**
@@ -18,7 +17,7 @@ Page({
    */
   onLoad: function (options) {
     this.setData({
-      list_id:options.content_id
+      topId:options.topId
     })
     this.init()
   },
@@ -34,6 +33,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+
   },
 
   /**
@@ -61,7 +61,26 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    pageNo+=1
+    wx.request({
+      url: app.globalData.api.dev +`/top?id=${this.data.topId}&pageSize=20&pageNo=${pageNo}`,
+      success:res=>{
+        let total = res.data.data.total
+        let pageSize = 20
+        if(total/pageSize < pageNo){
+          wx.showToast({
+            title: '没有更多了',
+            icon: 'none',
+            duration: 2000
+          })
+          return
+        }
+        let arr = this.data.list.concat(res.data.data.list)
+        this.setData({
+          list:arr,
+        })
+      }
+    })
   },
 
   /**
@@ -70,29 +89,16 @@ Page({
   onShareAppMessage: function () {
 
   },
-
   init(){
     wx.request({
-      url: app.globalData.api.dev+`/songlist?id=${this.data.list_id}`,
+      url: app.globalData.api.dev +`/top?id=${this.data.topId}&pageSize=20`,
       success:res=>{
         this.setData({
-          title:res.data.data.dissname,
-          desc:res.data.data.desc,
-          pic:res.data.data.logo,
-          songList:res.data.data.songlist.slice(0,100)
+          rankData:res.data.data,
+          list:res.data.data.list
+
         })
       }
-    })
-  },
-  showDesc(e){
-    let a = this.data.desc.replace(/(?=&).*?(?=;)/g,"").replace(/;/g,"")
-    this.setData({
-      desc:a
-    })
-    wx.showModal({
-      content: this.data.desc,
-      showCancel:false,
-      confirmText:'关闭'
     })
   }
 })

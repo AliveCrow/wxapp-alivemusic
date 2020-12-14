@@ -1,4 +1,4 @@
-// pages/songList/index.js
+// pages/more/index.js
 const app = getApp()
 Page({
 
@@ -6,21 +6,21 @@ Page({
    * 页面的初始数据
    */
   data: {
-    list_id:Number,
-    title:String,
-    desc:String,
-    pic:String,
-    songList:Array
+    hotList:[]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.setData({
-      list_id:options.content_id
+    wx.request({
+      url: app.globalData.api.dev + '/recommend/playlist/u',
+      success: (res) => {
+        this.setData({
+          hotList: res.data.data.list
+        })
+      }
     })
-    this.init()
   },
 
   /**
@@ -34,6 +34,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+
   },
 
   /**
@@ -70,29 +71,9 @@ Page({
   onShareAppMessage: function () {
 
   },
-
-  init(){
-    wx.request({
-      url: app.globalData.api.dev+`/songlist?id=${this.data.list_id}`,
-      success:res=>{
-        this.setData({
-          title:res.data.data.dissname,
-          desc:res.data.data.desc,
-          pic:res.data.data.logo,
-          songList:res.data.data.songlist.slice(0,100)
-        })
-      }
-    })
-  },
-  showDesc(e){
-    let a = this.data.desc.replace(/(?=&).*?(?=;)/g,"").replace(/;/g,"")
-    this.setData({
-      desc:a
-    })
-    wx.showModal({
-      content: this.data.desc,
-      showCancel:false,
-      confirmText:'关闭'
+  detail(e){
+    wx.navigateTo({
+      url: `/pages/songList/index?content_id=${e.currentTarget.dataset.content_id}`
     })
   }
 })

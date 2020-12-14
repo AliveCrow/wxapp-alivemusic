@@ -1,5 +1,6 @@
 // components/songItem/index.js
 const app = getApp()
+const backgroundAudioManager = wx.getBackgroundAudioManager()
 Component({
   /**
    * 组件的属性列表
@@ -58,15 +59,14 @@ Component({
             })
             return 
           }
-          const backgroundAudioManager = wx.getBackgroundAudioManager()
           backgroundAudioManager.title = this.data.name
           backgroundAudioManager.epname = this.data.album.name
           backgroundAudioManager.singer = this.data.singer
           backgroundAudioManager.coverImgUrl =this.data.album_img
-          // 设置了 src 之后会自动播放
-          // console.log(res.data.data);
           backgroundAudioManager.src = res.data.data[songmid]
-          this.triggerEvent('createAudio') 
+          backgroundAudioManager.onCanplay((e)=>{
+            console.log(backgroundAudioManager);
+          })
         },  
         fail: error => {
           wx.showToast({
