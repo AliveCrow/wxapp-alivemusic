@@ -13,6 +13,7 @@ Component({
    * 组件的初始数据
    */
   data: {
+    songData:{},
     name:String,
     album:String,
     album_img:String,
@@ -26,6 +27,7 @@ Component({
         success:(res)=>{
           let info = res.data.data.track_info
           this.setData({
+            songData:res.data.data,
             name:info.name,
             album:info.album.name,
             singer:info.singer[0].name,
@@ -47,6 +49,10 @@ Component({
    */
   methods: {
     onTap: function(){
+      // wx.showLoading({
+      //   title: '稍等',
+      // })
+
       let songmid = this.data.songmid
       wx.request({
         url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
@@ -65,7 +71,24 @@ Component({
           backgroundAudioManager.coverImgUrl =this.data.album_img
           backgroundAudioManager.src = res.data.data[songmid]
           backgroundAudioManager.onCanplay((e)=>{
-            console.log(backgroundAudioManager);
+            wx.hideLoading(
+              // success: (res) => {
+              //   // wx.navigateTo({
+              //   //   url: '/pages/Play/index',
+              //   //   success:r=>{
+              //   //     r.eventChannel.emit('playerGetSongData',this.data.songData)
+              //   //   }
+              //   // })
+              // },
+            )
+
+          })
+          wx.navigateTo({
+            url: '/pages/Play/index',
+            success:r=>{
+              r.eventChannel.emit('playerGetSongData',this.data.songData)
+              r.eventChannel.emit('backgroundAudioManager',backgroundAudioManager)
+            }
           })
         },  
         fail: error => {

@@ -5,7 +5,8 @@
     "pages/list/index",
     "pages/songList/index",
     "pages/more/index",
-    "pages/rank/index"
+    "pages/rank/index",
+    "pages/Play/index"
   ],
   "requiredBackgroundModes": ["audio", "location"],
   "window": {

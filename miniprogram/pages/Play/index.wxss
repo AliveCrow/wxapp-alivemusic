@@ -1,0 +1,40 @@
+/* pages/Play/index.wxss */
+
+.player{
+  height: 100%;
+  width: 100%;
+}
+.player-bgc{
+  height: 100%;
+  width: 100%;
+  filter: blur(10px);
+  transform: scale(1.1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.player-control{
+  display:flex;
+  flex-direction: column;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  margin:20px 0;
+}
+.player-progress{
+  margin: 0 10px;
+}
+
+.player-control-btn{
+  margin: 0 auto;
+}
+.player-font{
+  font-size:40px;
+}
+
+.player-pre{
+  display: inline-block;
+  transform: rotate(-180deg);
+}
