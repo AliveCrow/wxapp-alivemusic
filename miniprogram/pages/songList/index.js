@@ -7,6 +7,7 @@ Page({
    */
   data: {
     list_id:Number,
+    title:String,
     desc:String,
     pic:String,
     songList:Array
@@ -74,12 +75,23 @@ Page({
     wx.request({
       url: app.globalData.api.dev+`/songlist?id=${this.data.list_id}`,
       success:res=>{
+        console.log(res.data.data);
         this.setData({
+          title:res.data.data.dissname,
           desc:res.data.data.desc,
           pic:res.data.data.logo,
           songList:res.data.data.songlist.slice(0,100)
         })
       }
+    })
+  },
+  showDesc(e){
+    console.log(this.data.desc.replace(/(^x)|(x$)/g,''));
+    console.log(this.data.desc);
+    wx.showModal({
+      content: this.data.desc,
+      showCancel:false,
+      confirmText:'关闭'
     })
   }
 })

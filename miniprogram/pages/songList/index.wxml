@@ -1,8 +1,11 @@
 <!--pages/songList/index.wxml-->
 <view class="song-list-container">
-  <view class="song-list-header">
+  <view class="song-list-header" style="background-image:url({{pic}})">
     <image class="song-image" src="{{pic}}"></image>
-    <rich-text  class="song-list-dec"  nodes="{{desc}}"></rich-text>
+    <view class="song-list-right" >
+      <text class="song-list-title">{{title}}</text>
+      <rich-text bindtap="showDesc" class="song-list-dec" nodes="{{desc}}"></rich-text>
+    </view>
   </view>
   <songItem  wx:for="{{songList}}" wx:key='index' songmid='{{item.songmid}}'></songItem>
 </view>
