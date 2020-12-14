@@ -62,6 +62,10 @@ Page({
    */
   onReachBottom: function () {
     pageNo+=1
+    wx.showLoading({
+      title: '加载中',
+    })
+    
     wx.request({
       url: app.globalData.api.dev +`/top?id=${this.data.topId}&pageSize=20&pageNo=${pageNo}`,
       success:res=>{
@@ -79,6 +83,7 @@ Page({
         this.setData({
           list:arr,
         })
+        wx.hideLoading()
       }
     })
   },

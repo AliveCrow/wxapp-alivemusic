@@ -65,6 +65,9 @@ Page({
    */
   onReachBottom: function () {
     pageNo+=1;
+    wx.showLoading({
+      title: '加载中',
+    })
     wx.request({
       url: app.globalData.api.dev+`/search?key=${this.data.keyword}&pageNo=${pageNo}`,
       success:(res)=>{
@@ -72,6 +75,7 @@ Page({
         this.setData({
           searchResult:arr
         })
+        wx.hideLoading()
       }
     })
   },
