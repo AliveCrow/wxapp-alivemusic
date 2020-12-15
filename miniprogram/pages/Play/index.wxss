@@ -23,17 +23,36 @@
   bottom: 0;
   margin:20px 0;
 }
-.player-progress{
-  margin: 0 10px;
+.player-slider{
+  position: relative;
 }
-
+.player-slider::before{
+  content: attr(data-currentTime);
+  position: absolute;
+  z-index: 2;
+  color: #fff;
+  font-size: 10px;
+  bottom: -10px;
+  left: 0;
+}
+.player-slider::after{
+  content: attr(data-duration);
+  position: absolute;
+  z-index: 2;
+  color: #fff;
+  font-size: 10px;
+  bottom: -10px;
+  right: 0;
+}
 .player-control-btn{
   margin: 0 auto;
 }
 .player-font{
   font-size:40px;
 }
-
+.iconPlayerplay,.iconPlayerpause{
+  margin: 0 20px;
+}
 .player-pre{
   display: inline-block;
   transform: rotate(-180deg);

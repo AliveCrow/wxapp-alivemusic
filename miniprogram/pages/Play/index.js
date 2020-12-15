@@ -5,15 +5,18 @@ Page({
    * 页面的初始数据
    */
   data: {
-    songData:{},
-    playerBgc:String,
-    progress:{
-      percent:0,
-      activeColor:'#1976D2',
-      duration:1000,
-      strokeWidth:3,
-      borderRadius:3,
-      backgroundColor:"#fff"
+    currentTime: "00:00",
+    duration: "00:00",
+    songData: {},
+    playerBgc: String,
+    backgroundAudioManager:{},
+    paused:true,
+    progress: {
+      value: 0,
+      max: 0,
+      activeColor: '#1976D2',
+      blockSize: 3,
+      backgroundColor: "#fff"
     }
   },
 
@@ -22,32 +25,38 @@ Page({
    */
   onLoad: function (options) {
     const eventChannel = this.getOpenerEventChannel()
-    eventChannel.on('playerGetSongData',(songData)=>{
+    eventChannel.on('playerGetSongData', (songData) => {
       this.setData({
-        songData:songData,
-        playerBgc:`https://y.gtimg.cn/music/photo_new/T002R300x300M000${songData.track_info.album.mid}.jpg`
+        songData: songData,
+        playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${songData.track_info.album.mid}.jpg`
       })
       wx.setNavigationBarTitle({
         title: songData.track_info.name,
       })
     })
-    eventChannel.on('backgroundAudioManager',(backgroundAudioManager)=>{
-      backgroundAudioManager.onTimeUpdate((e)=>{
-        console.log(backgroundAudioManager);
-        let percent = Math.floor
-        (backgroundAudioManager.currentTime * 100/backgroundAudioManager.duration)
-        console.log(percent);
+    eventChannel.on('backgroundAudioManager', (backgroundAudioManager) => {
+      backgroundAudioManager.onPlay(()=>{
+        let duration = this.formatTime(backgroundAudioManager.duration)
+        this.setData({
+          duration: duration,
+          backgroundAudioManager:backgroundAudioManager,
+          paused:false,
+        })
+      })
+      backgroundAudioManager.onTimeUpdate((e) => {
+        let currentTime = this.formatTime(backgroundAudioManager.currentTime)
+        this.setData({
+          currentTime: currentTime,
+          progress: {
+            value: Math.round(backgroundAudioManager.currentTime),
+            max: Math.floor(backgroundAudioManager.duration),
+          }
+        })
+      }),
+      backgroundAudioManager.onSeeked(()=>{
+        backgroundAudioManager.play()
       })
     })
-  },
-  
-  //初始player
-  init(){
-
-  },
-  //
-  get(){
-
   },
 
 
@@ -99,5 +108,41 @@ Page({
   onShareAppMessage: function () {
 
   },
+  //初始player
+  init() {
 
+  },
+  //
+  formatTime(time) {
+    let min = Math.floor(time / 60)
+    let sec = Math.floor(time % 60)
+    if (min < 10) min = '0' + min
+    if (sec < 10) sec = '0' + sec
+    return `${min}:${sec}`
+  },
+
+  //play
+  play() {
+    this.data.backgroundAudioManager.play()
+    this.setData({
+      paused:false
+    })
+  },
+  //pause
+  pause() {
+    this.data.backgroundAudioManager.pause()
+    this.setData({
+      paused:true
+    })
+  },
+  //seek
+  seek(e) {
+    this.setData({
+      progress:{
+        value:e.detail.value
+      }
+    })
+    this.data.backgroundAudioManager.pause()
+    this.data.backgroundAudioManager.seek(e.detail.value)
+  },
 })

@@ -49,9 +49,9 @@ Component({
    */
   methods: {
     onTap: function(){
-      // wx.showLoading({
-      //   title: '稍等',
-      // })
+      wx.showLoading({
+        title: '稍等',
+      })
 
       let songmid = this.data.songmid
       wx.request({
@@ -66,30 +66,24 @@ Component({
             return 
           }
           backgroundAudioManager.title = this.data.name
-          backgroundAudioManager.epname = this.data.album.name
+          backgroundAudioManager.epname = this.data.album
           backgroundAudioManager.singer = this.data.singer
           backgroundAudioManager.coverImgUrl =this.data.album_img
           backgroundAudioManager.src = res.data.data[songmid]
-          backgroundAudioManager.onCanplay((e)=>{
-            wx.hideLoading(
-              // success: (res) => {
-              //   // wx.navigateTo({
-              //   //   url: '/pages/Play/index',
-              //   //   success:r=>{
-              //   //     r.eventChannel.emit('playerGetSongData',this.data.songData)
-              //   //   }
-              //   // })
-              // },
-            )
+          // backgroundAudioManager.onCanplay((e)=>{
+            wx.hideLoading({
+              success: (res) => {
+                wx.navigateTo({
+                  url: '/pages/Play/index',
+                  success:r=>{
+                    r.eventChannel.emit('playerGetSongData',this.data.songData)
+                    r.eventChannel.emit('backgroundAudioManager',backgroundAudioManager)
+                  }
+                })
+              },
+          })
 
-          })
-          wx.navigateTo({
-            url: '/pages/Play/index',
-            success:r=>{
-              r.eventChannel.emit('playerGetSongData',this.data.songData)
-              r.eventChannel.emit('backgroundAudioManager',backgroundAudioManager)
-            }
-          })
+          // })
         },  
         fail: error => {
           wx.showToast({

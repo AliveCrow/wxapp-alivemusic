@@ -8,18 +8,21 @@
   <!-- 控件 -->
   <view class="player-control">
     <!-- 进度条 -->
-    <progress class="player-progress" 
-    percent="{{progress.percent}}"
-    activeColor="{{progress.activeColor}}"
-     duration="{{progress.duration}}" 
-     stroke-width="{{progress.strokeWidth}}"
-    border-radius="{{progress.borderRadius}}"
+    <slider 
+    class="player-slider"
+    data-currentTime="{{currentTime}}"
+    data-duration="{{duration}}"
+    value='{{progress.value}}'
+    block-size="{{progress.blockSize}}"
     backgroundColor="{{progress.backgroundColor}}"
-      ></progress>
+    activeColor="{{progress.activeColor}}"
+    max="{{progress.max}}"
+    bindchange="seek"
+    ></slider>
     <view class="player-control-btn">
       <text class="player-font iconfont iconPlayernext player-pre" style="color:#fff"></text>
-      <text class="player-font iconfont iconPlayerplay" style="color:#fff" wx:if="1"></text>
-      <text class="player-font iconfont iconPlayerpause" style="color:#fff" wx:else></text>
+      <text class="player-font iconfont iconPlayerplay" bindtap="play" style="color:#fff" wx:if="{{paused}}"></text>
+      <text class="player-font iconfont iconPlayerpause" bindtap="pause" style="color:#fff" wx:else></text>
       <text class="player-font iconfont iconPlayernext " style="color:#fff"></text>
     </view>
   </view>
