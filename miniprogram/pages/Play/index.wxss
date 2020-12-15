@@ -8,7 +8,7 @@
 .player-bgc{
   height: 100%;
   width: 100%;
-  filter: blur(10px);
+  filter: blur(10px) brightness(50%);
   transform: scale(1.1);
   position: absolute;
   top: 0;

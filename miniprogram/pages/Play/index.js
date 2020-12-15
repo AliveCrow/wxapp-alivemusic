@@ -59,7 +59,9 @@ Page({
     this.setData({
       paused: app.globalData.backgroundAudioManager.paused
     })
-    this.update()
+    backgroundAudioManager.onTimeUpdate(()=>{
+      this.update()
+    })
   },
 
   /**
@@ -119,24 +121,25 @@ Page({
       
       });
       backgroundAudioManager.onPause(() => {
-
         //设置全局Player变量
         player.progress.value = this.data.value
-
         this.setData({
           progress: {
-            value: player.progress.value
+            value: player.progress.value,
+            max:player.progress.max 
           },
         })
       })
 
       //进度更新
-      this.init()
+      backgroundAudioManager.onTimeUpdate(()=>{
+        this.update()
+      })
 
       //进度条拖动完成后播放
       backgroundAudioManager.onSeeked(() => {
         this.setData({
-          move: false
+          seek: false
         })
         backgroundAudioManager.play()
       })
@@ -178,7 +181,8 @@ Page({
         player.progress.value = this.data.value
         this.setData({
           progress:{
-            value: player.progress.value
+            value: player.progress.value,
+            max:player.progress.max 
           }
         })
         return 
@@ -186,7 +190,6 @@ Page({
       let currentTime = this.formatTime(backgroundAudioManager.currentTime)
       player.currentTime = currentTime
       player.progress.value = Math.round(backgroundAudioManager.currentTime)
-      player.progress.max = Math.floor(backgroundAudioManager.duration)
 
       this.setData({
         currentTime: player.currentTime,
