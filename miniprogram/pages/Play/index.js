@@ -16,7 +16,7 @@ Page({
     progress: {
       value: Number,
       max: Number,
-      activeColor: '#1976D2',
+      activeColor: "#1976D2",
       blockSize: 3,
       backgroundColor: "#fff"
     }
@@ -41,10 +41,7 @@ Page({
         backgroundAudioManager: backgroundAudioManager,
       })
       backgroundAudioManager.onCanplay(() => {
-        console.log('onCanplay');
-        let progress
         backgroundAudioManager.onPlay(() => {
-          console.log('onPlay');
           let duration = this.formatTime(backgroundAudioManager.duration)
           this.setData({
             duration: duration,
@@ -54,43 +51,31 @@ Page({
               max: Math.floor(backgroundAudioManager.duration),
             }
           })
-          progress = setInterval(() => {
+
+          backgroundAudioManager.onTimeUpdate((e) => {
+            if(this.data.move){
+              this.setData({
+                progress:{
+                  value:this.data.value
+                }
+              })
+              return 
+            }
             let currentTime = this.formatTime(backgroundAudioManager.currentTime)
-            this.setData({
-              currentTime: currentTime,
-              progress: {
-                value: Math.round(backgroundAudioManager.currentTime),
-                max: Math.floor(backgroundAudioManager.duration),
-              }
-            })
-            console.log('setInterval');
-          }, 1000)
-          // backgroundAudioManager.onTimeUpdate((e) => {
-          //   console.log('onTimeUpdate');
-          //   let currentTime = this.formatTime(backgroundAudioManager.currentTime)
-          //     this.setData({
-          //       currentTime: currentTime,
-          //       progress: {
-          //         value: Math.round(backgroundAudioManager.currentTime),
-          //         max: Math.floor(backgroundAudioManager.duration),
-          //       }
-          //     })
-          // })
+              this.setData({
+                currentTime: currentTime,
+                progress: {
+                  value: Math.round(backgroundAudioManager.currentTime),
+                  max: Math.floor(backgroundAudioManager.duration),
+                }
+              })
+          })
 
         });
-        backgroundAudioManager.onPause(() => {
-          console.log('onPause');
-          clearInterval(progress)
-          this.setData({
-            progress:{
-              value:50
-            }
-          })
-          console.log(this.data.progress);
-        })
-        backgroundAudioManager.onSeeking(() => {
-        })
         backgroundAudioManager.onSeeked(() => {
+          this.setData({
+            move:false
+          })
           backgroundAudioManager.play()
         })
       })
@@ -178,7 +163,12 @@ Page({
   },
   //seek
   seek(e) {
+
     this.data.backgroundAudioManager.pause()
+    this.setData({
+      move:true,
+      value:e.detail.value
+    })
     this.data.backgroundAudioManager.seek(e.detail.value)
   }
 })
