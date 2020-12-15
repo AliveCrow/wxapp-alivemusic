@@ -7,13 +7,15 @@ Page({
    */
   data: {
     hotList: [],
-    rank: []
+    rank: [],
+    isPlaying:false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+ 
     let _this = this
     //推荐歌曲
     wx.request({
@@ -52,14 +54,21 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    if(!app.globalData.backgroundAudioManager){
+      this.setData({
+        isPlaying:false
+      })
+    }else{
+      this.setData({
+        isPlaying:true
+      })
+    }
   },
 
   /**
@@ -108,6 +117,8 @@ Page({
     wx.navigateTo({
       url: `/pages/songList/index?content_id=${e.currentTarget.dataset.content_id}`
     })
+  },
+  setList(){
+    app.globalData.playingList.willPlay=this.data.songRecommen
   }
-
 })

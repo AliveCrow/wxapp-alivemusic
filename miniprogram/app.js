@@ -12,7 +12,21 @@ App({
     }
 
     this.globalData = {
-      api:api
+      api:api,
+      backgroundAudioManager:null,
+      playingList:{
+        isPlaying:{},
+        willPlay:[]
+      },
+      player:{
+        currentTime: "00:00",
+        duration: "00:00",
+        progress: {
+          value: Number,
+          max: Number,
+        }
+      }
+
     }
   }
 })

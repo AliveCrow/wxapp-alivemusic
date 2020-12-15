@@ -2,7 +2,10 @@
 <view class="player">
   <image class="player-bgc" mode="aspectFill" src="{{playerBgc}}"></image>
   <!-- 歌词 -->
-  <view class="player-lyric-box"></view>
+  <view class="player-lyric-box">
+    {{progress.value}}
+    {{progressValue}}
+  </view>
 
 
   <!-- 控件 -->

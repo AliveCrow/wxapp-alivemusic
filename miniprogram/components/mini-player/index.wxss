@@ -1,1 +1,78 @@
 /* components/mini-player/index.wxss */
+
+.mini-player{
+  display: flex;
+  background-color: #fff;
+  width: 100%;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0,.1);
+  justify-content: space-between;
+}
+
+.mini-player-image{
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  margin-top: -8px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-bottom: 3px;
+}
+.playing{
+  animation: rotate 8s linear infinite;
+}
+.pause{
+  animation-play-state: paused;
+}
+@keyframes rotate{
+  0%{
+    transform: rotate(0);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
+  
+}
+
+.mini-player-item{
+  display: flex;
+  align-items: center;
+}
+
+.mini-player-btn{
+  margin-right: 10px;
+}
+
+@font-face {
+  font-family: 'iconfont';  /* project id 2270135 */
+  src: url('//at.alicdn.com/t/font_2270135_egqfejutjfo.eot');
+  src: url('//at.alicdn.com/t/font_2270135_egqfejutjfo.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_2270135_egqfejutjfo.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_2270135_egqfejutjfo.woff') format('woff'),
+  url('//at.alicdn.com/t/font_2270135_egqfejutjfo.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_2270135_egqfejutjfo.svg#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.iconList:before {
+  content: "\e638";
+}
+
+.iconPlayernext:before {
+  content: "\e635";
+}
+
+.iconPlayerpause:before {
+  content: "\e636";
+}
+
+.iconPlayerplay:before {
+  content: "\e637";
+}
+

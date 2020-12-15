@@ -55,45 +55,54 @@ Component({
 
       let songmid = this.data.songmid
       wx.request({
-        url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
-        success: res => {
-          if (JSON.stringify(res.data.data) == "{}") {
-            wx.showToast({
-              title: '歌曲需要开通绿钻或者购买',
-              icon: 'none',
-              duration: 2000
-            })
-            return 
-          }
-          backgroundAudioManager.title = this.data.name
-          backgroundAudioManager.epname = this.data.album
-          backgroundAudioManager.singer = this.data.singer
-          backgroundAudioManager.coverImgUrl =this.data.album_img
-          backgroundAudioManager.src = res.data.data[songmid]
-          // backgroundAudioManager.onCanplay((e)=>{
-            wx.hideLoading({
-              success: (res) => {
-                wx.navigateTo({
-                  url: '/pages/Play/index',
-                  success:r=>{
-                    r.eventChannel.emit('playerGetSongData',this.data.songData)
-                    r.eventChannel.emit('backgroundAudioManager',backgroundAudioManager)
-                  }
+        url: app.globalData.api.dev+`/song?songmid=${songmid}`,
+        success:(res)=>{
+          app.globalData.playingList.isPlaying = res.data.data,
+          wx.request({
+            url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
+            success: res => {
+              if (JSON.stringify(res.data.data) == "{}") {
+                wx.showToast({
+                  title: '歌曲需要开通绿钻或者购买',
+                  icon: 'none',
+                  duration: 2000
                 })
-              },
+                return 
+              }
+              backgroundAudioManager.title = this.data.name
+              backgroundAudioManager.epname = this.data.album
+              backgroundAudioManager.singer = this.data.singer
+              backgroundAudioManager.coverImgUrl =this.data.album_img
+              backgroundAudioManager.src = res.data.data[songmid]
+              app.globalData.backgroundAudioManager = backgroundAudioManager
+              // backgroundAudioManager.onCanplay((e)=>{
+                wx.hideLoading({
+                  success: () => {
+                    wx.navigateTo({
+                      url: '/pages/Play/index',
+                      success:r=>{
+    
+                        // r.eventChannel.emit('playerGetSongData',this.data.songData)
+                        // r.eventChannel.emit('backgroundAudioManager',backgroundAudioManager)
+                      }
+                    })
+                  },
+              })
+    
+              // })
+            },  
+            fail: error => {
+              wx.showToast({
+                title: '接口错误',
+                icon: 'fail',
+                duration: 2000
+              })
+            }
           })
-
-          // })
-        },  
-        fail: error => {
-          wx.showToast({
-            title: '接口错误',
-            icon: 'fail',
-            duration: 2000
-          })
-        }
+      
+        } 
       })
-  
+
     },
   }
 })

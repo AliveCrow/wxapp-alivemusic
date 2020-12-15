@@ -3,6 +3,7 @@
     "vx-title":"../../components/title/index",
     "songItem":"../../components/songItem/index",
     "scrollItem":"../../components/scroll-Item/index",
-    "rankItem":"../../components/rank-content/index"
+    "rankItem":"../../components/rank-content/index",
+    "miniPlayer":"../../components/mini-player/index"
   }
 }

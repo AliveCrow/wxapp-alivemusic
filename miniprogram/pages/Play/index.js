@@ -1,4 +1,8 @@
 // pages/Play/index.js
+const app = getApp()
+let player = app.globalData.player
+let backgroundAudioManager
+
 Page({
 
   /**
@@ -9,9 +13,9 @@ Page({
     duration: "00:00",
     songData: {},
     playerBgc: String,
-    backgroundAudioManager: {},
+    // backgroundAudioManager: {},
     paused: true,
-    move: false,
+    seek: false,
     value: Number,
     progress: {
       value: Number,
@@ -26,63 +30,18 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const eventChannel = this.getOpenerEventChannel()
-    eventChannel.on('playerGetSongData', (songData) => {
-      this.setData({
-        songData: songData,
-        playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${songData.track_info.album.mid}.jpg`
-      })
-      wx.setNavigationBarTitle({
-        title: songData.track_info.name,
-      })
+    backgroundAudioManager = app.globalData.backgroundAudioManager
+    this.setData({
+      currentTime: player.currentTime,
+      duration: player.duration,
+      progress: {
+        value: player.progress.value,
+        max: player.progress.max
+      },
+      songData: app.globalData.playingList.isPlaying,
+      playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`
     })
-    eventChannel.on('backgroundAudioManager', (backgroundAudioManager) => {
-      this.setData({
-        backgroundAudioManager: backgroundAudioManager,
-      })
-      backgroundAudioManager.onCanplay(() => {
-        backgroundAudioManager.onPlay(() => {
-          let duration = this.formatTime(backgroundAudioManager.duration)
-          this.setData({
-            duration: duration,
-            paused: false,
-            progress: {
-              value:Math.round(backgroundAudioManager.currentTime),
-              max: Math.floor(backgroundAudioManager.duration),
-            }
-          })
-
-          backgroundAudioManager.onTimeUpdate((e) => {
-            if(this.data.move){
-              this.setData({
-                progress:{
-                  value:this.data.value
-                }
-              })
-              return 
-            }
-            let currentTime = this.formatTime(backgroundAudioManager.currentTime)
-              this.setData({
-                currentTime: currentTime,
-                progress: {
-                  value: Math.round(backgroundAudioManager.currentTime),
-                  max: Math.floor(backgroundAudioManager.duration),
-                }
-              })
-          })
-
-        });
-        backgroundAudioManager.onSeeked(() => {
-          this.setData({
-            move:false
-          })
-          backgroundAudioManager.play()
-        })
-      })
-
-
-
-    })
+    this.init()
   },
 
 
@@ -97,7 +56,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.setData({
+      paused: app.globalData.backgroundAudioManager.paused
+    })
+    this.update()
   },
 
   /**
@@ -134,9 +96,57 @@ Page({
   onShareAppMessage: function () {
 
   },
+
   //初始player
   init() {
+    backgroundAudioManager.onCanplay(() => {
+      //初始化播放器-设置时长
+      backgroundAudioManager.onPlay(() => {
+        let duration = this.formatTime(backgroundAudioManager.duration)
+        //设置全局Player变量
 
+        player.duration = duration
+        player.progress.max = Math.floor(backgroundAudioManager.duration)
+
+        this.setData({
+          duration: player.duration,
+          paused: false,
+          progress: {
+            value: player.progress.value,
+            max: player.progress.max,
+          }
+        })
+      
+      });
+      backgroundAudioManager.onPause(() => {
+
+        //设置全局Player变量
+        player.progress.value = this.data.value
+
+        this.setData({
+          progress: {
+            value: player.progress.value
+          },
+        })
+      })
+
+      //进度更新
+      this.init()
+
+      //进度条拖动完成后播放
+      backgroundAudioManager.onSeeked(() => {
+        this.setData({
+          move: false
+        })
+        backgroundAudioManager.play()
+      })
+
+      //播放结束后的动作
+      backgroundAudioManager.onEnded(() => {
+        this.reset()
+
+      })
+    })
   },
   //
   formatTime(time) {
@@ -149,26 +159,60 @@ Page({
 
   //play
   play() {
-    this.data.backgroundAudioManager.play()
+    app.globalData.backgroundAudioManager.play()
     this.setData({
       paused: false
     })
   },
   //pause
   pause() {
-    this.data.backgroundAudioManager.pause()
+    app.globalData.backgroundAudioManager.pause()
     this.setData({
       paused: true
     })
   },
+  update() {
+    let updateId = setInterval(()=>{
+      if(this.data.seek){
+        clearInterval(updateId)
+        player.progress.value = this.data.value
+        this.setData({
+          progress:{
+            value: player.progress.value
+          }
+        })
+        return 
+      }
+      let currentTime = this.formatTime(backgroundAudioManager.currentTime)
+      player.currentTime = currentTime
+      player.progress.value = Math.round(backgroundAudioManager.currentTime)
+      player.progress.max = Math.floor(backgroundAudioManager.duration)
+
+      this.setData({
+        currentTime: player.currentTime,
+        progressValue: player.progress.value,
+        progress: {
+          value: player.progress.value,
+          max: player.progress.max
+        }
+      })
+
+    },1000)
+  },
+  //reset
+  reset() {
+    app.globalData.backgroundAudioManager.pause()
+    app.globalData.backgroundAudioManager.seek(0)
+    app.globalData.backgroundAudioManager.play()
+  },
   //seek
   seek(e) {
-
-    this.data.backgroundAudioManager.pause()
+    //暂停后再拖动进度条,放置进度条跳动
+    app.globalData.backgroundAudioManager.pause()
     this.setData({
-      move:true,
-      value:e.detail.value
+      seek: true,
+      value: e.detail.value
     })
-    this.data.backgroundAudioManager.seek(e.detail.value)
+    app.globalData.backgroundAudioManager.seek(e.detail.value)
   }
 })

@@ -4,7 +4,7 @@
 	<view class="recommend-wapper">
 		<vx-title>歌曲推荐</vx-title>
 		<!-- 歌曲推荐 -->
-		<songItem  wx:for="{{songRecommend}}" wx:key='index' songmid='{{item.mid}}'></songItem>
+		<songItem bindtap="setList" data-song="{{item}}"  wx:for="{{songRecommend}}" wx:key='index' songmid='{{item.mid}}'></songItem>
 
 		<!-- 热门歌单 -->
 		<vx-title url='/pages/more/index'>热门歌单</vx-title>
@@ -22,4 +22,5 @@
 			</blockquote>
 		</view>
 	</view>
+	<miniPlayer wx:if="{{isPlaying}}" style="width:100%" class="mini-player" ></miniPlayer>
 </view>

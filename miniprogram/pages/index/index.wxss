@@ -1,6 +1,5 @@
 /* miniprogram/pages/index/index.wxss */
 
-#container {}
 
 .search {
   background-color: #fff;
@@ -25,5 +24,10 @@
 .scroll-view-x {
   height: 150px;
   white-space: nowrap;
+}
+
+.mini-player{
+  position: fixed;
+  bottom: 0;
 }
 
