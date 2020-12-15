@@ -9,11 +9,13 @@ Page({
     duration: "00:00",
     songData: {},
     playerBgc: String,
-    backgroundAudioManager:{},
-    paused:true,
+    backgroundAudioManager: {},
+    paused: true,
+    move: false,
+    value: Number,
     progress: {
-      value: 0,
-      max: 0,
+      value: Number,
+      max: Number,
       activeColor: '#1976D2',
       blockSize: 3,
       backgroundColor: "#fff"
@@ -35,27 +37,66 @@ Page({
       })
     })
     eventChannel.on('backgroundAudioManager', (backgroundAudioManager) => {
-      backgroundAudioManager.onPlay(()=>{
-        let duration = this.formatTime(backgroundAudioManager.duration)
-        this.setData({
-          duration: duration,
-          backgroundAudioManager:backgroundAudioManager,
-          paused:false,
+      this.setData({
+        backgroundAudioManager: backgroundAudioManager,
+      })
+      backgroundAudioManager.onCanplay(() => {
+        console.log('onCanplay');
+        let progress
+        backgroundAudioManager.onPlay(() => {
+          console.log('onPlay');
+          let duration = this.formatTime(backgroundAudioManager.duration)
+          this.setData({
+            duration: duration,
+            paused: false,
+            progress: {
+              value:Math.round(backgroundAudioManager.currentTime),
+              max: Math.floor(backgroundAudioManager.duration),
+            }
+          })
+          progress = setInterval(() => {
+            let currentTime = this.formatTime(backgroundAudioManager.currentTime)
+            this.setData({
+              currentTime: currentTime,
+              progress: {
+                value: Math.round(backgroundAudioManager.currentTime),
+                max: Math.floor(backgroundAudioManager.duration),
+              }
+            })
+            console.log('setInterval');
+          }, 1000)
+          // backgroundAudioManager.onTimeUpdate((e) => {
+          //   console.log('onTimeUpdate');
+          //   let currentTime = this.formatTime(backgroundAudioManager.currentTime)
+          //     this.setData({
+          //       currentTime: currentTime,
+          //       progress: {
+          //         value: Math.round(backgroundAudioManager.currentTime),
+          //         max: Math.floor(backgroundAudioManager.duration),
+          //       }
+          //     })
+          // })
+
+        });
+        backgroundAudioManager.onPause(() => {
+          console.log('onPause');
+          clearInterval(progress)
+          this.setData({
+            progress:{
+              value:50
+            }
+          })
+          console.log(this.data.progress);
+        })
+        backgroundAudioManager.onSeeking(() => {
+        })
+        backgroundAudioManager.onSeeked(() => {
+          backgroundAudioManager.play()
         })
       })
-      backgroundAudioManager.onTimeUpdate((e) => {
-        let currentTime = this.formatTime(backgroundAudioManager.currentTime)
-        this.setData({
-          currentTime: currentTime,
-          progress: {
-            value: Math.round(backgroundAudioManager.currentTime),
-            max: Math.floor(backgroundAudioManager.duration),
-          }
-        })
-      }),
-      backgroundAudioManager.onSeeked(()=>{
-        backgroundAudioManager.play()
-      })
+
+
+
     })
   },
 
@@ -125,24 +166,19 @@ Page({
   play() {
     this.data.backgroundAudioManager.play()
     this.setData({
-      paused:false
+      paused: false
     })
   },
   //pause
   pause() {
     this.data.backgroundAudioManager.pause()
     this.setData({
-      paused:true
+      paused: true
     })
   },
   //seek
   seek(e) {
-    this.setData({
-      progress:{
-        value:e.detail.value
-      }
-    })
     this.data.backgroundAudioManager.pause()
     this.data.backgroundAudioManager.seek(e.detail.value)
-  },
+  }
 })

@@ -8,17 +8,9 @@
   <!-- 控件 -->
   <view class="player-control">
     <!-- 进度条 -->
-    <slider 
-    class="player-slider"
-    data-currentTime="{{currentTime}}"
-    data-duration="{{duration}}"
-    value='{{progress.value}}'
-    block-size="{{progress.blockSize}}"
-    backgroundColor="{{progress.backgroundColor}}"
-    activeColor="{{progress.activeColor}}"
-    max="{{progress.max}}"
-    bindchange="seek"
-    ></slider>
+    <slider class="player-slider" data-currentTime="{{currentTime}}" data-duration="{{duration}}"
+      value='{{progress.value}}' block-size="{{progress.blockSize}}" backgroundColor="{{progress.backgroundColor}}"
+      activeColor="{{progress.activeColor}}" max="{{progress.max}}" bindchange="seek"></slider>
     <view class="player-control-btn">
       <text class="player-font iconfont iconPlayernext player-pre" style="color:#fff"></text>
       <text class="player-font iconfont iconPlayerplay" bindtap="play" style="color:#fff" wx:if="{{paused}}"></text>
