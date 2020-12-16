@@ -29,6 +29,7 @@ Component({
           coverUrl: app.globalData.backgroundAudioManager.coverImgUrl,
         }
       })
+      app.globalData.playingList.index = this.data.playList.findIndex(item => this.data.isPlaying.track_info.mid === item.mid || this.data.isPlaying.track_info.mid === item.songmid)
     }
   },
 
@@ -43,6 +44,7 @@ Component({
           coverUrl: app.globalData.backgroundAudioManager.coverImgUrl,
         }
       })
+      app.globalData.playingList.index = this.data.playList.findIndex(item => this.data.isPlaying.track_info.mid === item.mid || this.data.isPlaying.track_info.mid === item.songmid)
     },
   },
   /**
@@ -93,7 +95,7 @@ Component({
             wx.request({
               url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
               success: url => {
-                if (JSON.stringify(res.data.data) == "{}") {
+                if (JSON.stringify(url.data.data) == "{}") {
                   wx.showToast({
                     title: '歌曲需要开通绿钻或者购买',
                     icon: 'none',
@@ -106,7 +108,7 @@ Component({
                 backgroundAudioManager.singer = res.data.data.track_info.singer[0].name
                 backgroundAudioManager.coverImgUrl = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${res.data.data.track_info.album.mid}.jpg`
                 backgroundAudioManager.src = url.data.data[res.data.data.track_info.mid]
-                backgroundAudioManager.onCanplay(()=>{
+                backgroundAudioManager.onCanplay(() => {
                   wx.hideLoading({
                     success: () => {
                       wx.navigateTo({
@@ -131,6 +133,7 @@ Component({
         }
       })
 
-    }
+    },
+
   }
 })

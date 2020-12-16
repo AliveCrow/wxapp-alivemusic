@@ -16,7 +16,8 @@ App({
       backgroundAudioManager:null,
       playingList:{
         isPlaying:{},
-        willPlay:[]
+        willPlay:[],
+        index:Number
       },
       player:{
         currentTime: "00:00",

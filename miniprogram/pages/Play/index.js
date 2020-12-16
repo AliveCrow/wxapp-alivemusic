@@ -35,7 +35,9 @@ Page({
       playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`,
       duration: player.duration,
     })
+    app.globalData.playingList.index = app.globalData.playingList.willPlay.findIndex(item => app.globalData.playingList.isPlaying.track_info.mid === item.mid || app.globalData.playingList.isPlaying.track_info.mid === item.songmid)
 
+    console.log(app.globalData);
   },
 
 
@@ -53,6 +55,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    wx.setNavigationBarTitle({
+      title: backgroundAudioManager.title
+    })
     this.setData({
       paused: app.globalData.backgroundAudioManager.paused,
       currentTime: player.currentTime,
@@ -165,5 +170,77 @@ Page({
     })
     backgroundAudioManager.pause()
     backgroundAudioManager.seek(e.detail.value)
+  },
+
+  pre() {
+    app.globalData.playingList.index -= 1
+    if (app.globalData.playingList.index < 0) {
+      app.globalData.playingList.index = app.globalData.playingList.willPlay.length - 1
+    }
+    wx.showLoading({
+      title: '稍等',
+    })
+    let songmid = app.globalData.playingList.willPlay[app.globalData.playingList.index].mid
+    this.setPlayer(songmid)
+
+  },
+  next() {
+    app.globalData.playingList.index += 1
+    if (app.globalData.playingList.index > app.globalData.playingList.willPlay.length - 1) {
+      app.globalData.playingList.index = 0
+    }
+    wx.showLoading({
+      title: '稍等',
+    })
+    let songmid = app.globalData.playingList.willPlay[app.globalData.playingList.index].mid ||
+    app.globalData.playingList.willPlay[app.globalData.playingList.index].songmid
+    this.setPlayer(songmid)
+
+  },
+
+  setPlayer(songmid){
+    wx.request({
+      url: app.globalData.api.dev + `/song?songmid=${songmid}`,
+      success: (res) => {
+        app.globalData.playingList.isPlaying = res.data.data,
+
+          wx.request({
+            url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
+            success: url => {
+              if (JSON.stringify(url.data.data) == "{}") {
+                wx.showToast({
+                  title: '歌曲需要开通绿钻或者购买',
+                  icon: 'none',
+                  duration: 2000
+                })
+                return
+              }
+              backgroundAudioManager.title = app.globalData.playingList.isPlaying.track_info.name
+              backgroundAudioManager.epname = app.globalData.playingList.isPlaying.track_info.album.name
+              backgroundAudioManager.singer = app.globalData.playingList.isPlaying.track_info.singer
+              backgroundAudioManager.coverImgUrl = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`
+              backgroundAudioManager.src = url.data.data[songmid]
+              wx.hideLoading({
+                success:()=>{
+                  wx.setNavigationBarTitle({
+                    title: backgroundAudioManager.title
+                  })
+                  this.setData({
+                    playerBgc:`https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`
+                  })
+                }
+              })
+            },
+            fail: error => {
+              wx.showToast({
+                title: '接口错误',
+                icon: 'fail',
+                duration: 2000
+              })
+            }
+          })
+
+      }
+    })
   }
 })

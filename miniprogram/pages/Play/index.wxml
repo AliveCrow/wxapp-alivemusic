@@ -15,10 +15,10 @@
       value='{{progress.value}}' block-size="{{progress.blockSize}}" backgroundColor="{{progress.backgroundColor}}"
       activeColor="#1976D2" max="{{progress.max}}" bindchange="seek"></slider>
     <view class="player-control-btn">
-      <text class="player-font iconfont iconPlayernext player-pre" style="color:#fff"></text>
+      <text bindtap="pre" class="player-font iconfont iconPlayernext player-pre" style="color:#fff"></text>
       <text class="player-font iconfont iconPlayerplay" bindtap="play" style="color:#fff" wx:if="{{paused}}"></text>
       <text class="player-font iconfont iconPlayerpause" bindtap="pause" style="color:#fff" wx:else></text>
-      <text class="player-font iconfont iconPlayernext " style="color:#fff"></text>
+      <text bindtap="next" class="player-font iconfont iconPlayernext " style="color:#fff"></text>
     </view>
   </view>
 </view>
