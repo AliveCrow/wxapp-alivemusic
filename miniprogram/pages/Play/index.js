@@ -3,6 +3,8 @@ const app = getApp()
 let player = app.globalData.player
 let backgroundAudioManager
 let mode = ["random","loop","normal"]
+import Player from '../../ulits/Player'
+let a = new Player
 
 Page({
 
@@ -37,7 +39,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
+    console.log(a);
     backgroundAudioManager = app.globalData.backgroundAudioManager
     this.setData({
       playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`,
