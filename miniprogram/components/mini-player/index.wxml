@@ -1,13 +1,26 @@
 <!--components/mini-player/index.wxml-->
 
-<view class="mini-player" bindtap="intoPlayer"  >
+<view class="mini-player" bindtap="intoPlayer">
   <view class="mini-player-left mini-player-item">
-    <image mode="scaleToFill" class="{{isPlay?'mini-player-image playing':'mini-player-image playing pause'}}" src="{{songData.coverUrl}}"></image>
+    <image mode="scaleToFill" class="{{isPlay?'mini-player-image playing':'mini-player-image playing pause'}}"
+      src="{{songData.coverUrl}}"></image>
     <text>{{songData.title}}</text>
   </view>
   <view class="mini-player-right mini-player-item">
-    <text class="mini-player-btn iconfont iconPlayerplay" catchtap="play" style="font-size:30px" wx:if="{{!isPlay}}"></text>
+    <text class="mini-player-btn iconfont iconPlayerplay" catchtap="play" style="font-size:30px"
+      wx:if="{{!isPlay}}"></text>
     <text class="mini-player-btn iconfont iconPlayerpause" catchtap="pause" style="font-size:30px" wx:else></text>
-    <text class="mini-player-btn iconfont iconList" style="font-size:20px"></text>
+    <text class="mini-player-btn iconfont iconList" catchtap="showList" style="font-size:20px"></text>
   </view>
+  <view  class="mini-player-list-wapper" catchtap="hiddenList" style="{{listShow?'display:block':'display:none'}}">
+    <view  bindtap="setSong"  class="mini-player-list" style="{{listShow?'display:block':'display:none'}}">
+      <view style="text-align:left;margin-bottom:10px;margin-left:10px;font-size:16px">播放列表:</view>
+      <text wx:for="{{playList}}" style="{{isPlaying.track_info.mid === item.mid || isPlaying.track_info.mid === item.songmid?'color:#1976D2':''}}" wx:key="index"
+        data-mid="{{item.mid}}">
+        {{item.name||item.songname}}
+
+      </text>
+    </view>
+  </view>
+
 </view>

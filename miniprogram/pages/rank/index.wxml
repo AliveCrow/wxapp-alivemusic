@@ -1,5 +1,5 @@
 <!--pages/rank/index.wxml-->
 <view class="rank-container">
   <view class="rank-title">{{rankData.info.title}}</view>
-  <songItem  wx:for="{{list}}" wx:key='index' songmid='{{item.mid}}'></songItem>
+  <songItem bindtap="setList"  wx:for="{{list}}" wx:key='index' songmid='{{item.mid}}'></songItem>
 </view>

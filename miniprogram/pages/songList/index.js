@@ -94,5 +94,8 @@ Page({
       showCancel:false,
       confirmText:'关闭'
     })
+  },
+  setList(){
+    app.globalData.playingList.willPlay=this.data.songList
   }
 })

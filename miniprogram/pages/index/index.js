@@ -119,6 +119,6 @@ Page({
     })
   },
   setList(){
-    app.globalData.playingList.willPlay=this.data.songRecommen
+    app.globalData.playingList.willPlay=this.data.songRecommend
   }
 })

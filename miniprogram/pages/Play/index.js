@@ -2,13 +2,13 @@
 const app = getApp()
 let player = app.globalData.player
 let backgroundAudioManager
-
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+    updateId: null,
     currentTime: "00:00",
     duration: "00:00",
     songData: {},
@@ -32,16 +32,10 @@ Page({
   onLoad: function (options) {
     backgroundAudioManager = app.globalData.backgroundAudioManager
     this.setData({
-      currentTime: player.currentTime,
+      playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`,
       duration: player.duration,
-      progress: {
-        value: player.progress.value,
-        max: player.progress.max
-      },
-      songData: app.globalData.playingList.isPlaying,
-      playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`
     })
-    this.init()
+
   },
 
 
@@ -49,6 +43,9 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
+    // console.log('onReady');
+    this.update()
+
 
   },
 
@@ -57,98 +54,56 @@ Page({
    */
   onShow: function () {
     this.setData({
-      paused: app.globalData.backgroundAudioManager.paused
+      paused: app.globalData.backgroundAudioManager.paused,
+      currentTime: player.currentTime,
+      ['progress.value']: player.progress.value,
+      ['progress.max']: player.progress.max
     })
-    backgroundAudioManager.onTimeUpdate(()=>{
-      this.update()
+    backgroundAudioManager.onCanplay(() => {
+      //初始化播放器-设置时长
+      this.setData({
+        songData: app.globalData.playingList.isPlaying,
+      })
+      this.init()
     })
+
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
   onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
+    clearInterval(this.data.updateId)
+    this.setData({
+      updateId: null
+    })
   },
 
   //初始player
   init() {
-    backgroundAudioManager.onCanplay(() => {
-      //初始化播放器-设置时长
-      backgroundAudioManager.onPlay(() => {
-        let duration = this.formatTime(backgroundAudioManager.duration)
-        //设置全局Player变量
-
-        player.duration = duration
-        player.progress.max = Math.floor(backgroundAudioManager.duration)
-
-        this.setData({
-          duration: player.duration,
-          paused: false,
-          progress: {
-            value: player.progress.value,
-            max: player.progress.max,
-          }
-        })
-      
-      });
-      backgroundAudioManager.onPause(() => {
-        //设置全局Player变量
-        player.progress.value = this.data.value
-        this.setData({
-          progress: {
-            value: player.progress.value,
-            max:player.progress.max 
-          },
-        })
+    backgroundAudioManager.onPlay(() => {
+      //设置全局Player变量
+      let currentTime = this.formatTime(backgroundAudioManager.currentTime)
+      player.currentTime = currentTime
+      let duration = this.formatTime(backgroundAudioManager.duration)
+      player.duration = duration
+      player.progress.max = Math.floor(backgroundAudioManager.duration)
+      this.setData({
+        currentTime: player.currentTime,
+        duration: player.duration,
+        paused: false,
+        ['progress.value']: player.progress.value,
+        ['progress.max']: player.progress.max
       })
+    });
 
-      //进度更新
-      backgroundAudioManager.onTimeUpdate(()=>{
-        this.update()
+
+    backgroundAudioManager.onSeeked(() => {
+      this.setData({
+        seek: false,
       })
-
-      //进度条拖动完成后播放
-      backgroundAudioManager.onSeeked(() => {
-        this.setData({
-          seek: false
-        })
-        backgroundAudioManager.play()
-      })
-
-      //播放结束后的动作
-      backgroundAudioManager.onEnded(() => {
-        this.reset()
-
-      })
+      backgroundAudioManager.play()
+    })
+    //播放结束后的动作
+    backgroundAudioManager.onEnded(() => {
+      this.reset()
     })
   },
   //
@@ -175,47 +130,40 @@ Page({
     })
   },
   update() {
-    let updateId = setInterval(()=>{
-      if(this.data.seek){
-        clearInterval(updateId)
-        player.progress.value = this.data.value
-        this.setData({
-          progress:{
-            value: player.progress.value,
-            max:player.progress.max 
-          }
-        })
-        return 
-      }
-      let currentTime = this.formatTime(backgroundAudioManager.currentTime)
-      player.currentTime = currentTime
-      player.progress.value = Math.round(backgroundAudioManager.currentTime)
-
-      this.setData({
-        currentTime: player.currentTime,
-        progressValue: player.progress.value,
-        progress: {
-          value: player.progress.value,
-          max: player.progress.max
+    this.setData({
+      updateId: setInterval(() => {
+        let currentTime = this.formatTime(backgroundAudioManager.currentTime)
+        player.currentTime = currentTime
+        player.progress.value = Math.round(backgroundAudioManager.currentTime)
+        if (this.data.seek) {
+          player.progress.value = this.data.value
         }
-      })
+        this.setData({
+          currentTime: player.currentTime,
+          progressValue: player.progress.value,
+          ['progress.value']: player.progress.value,
+          ['progress.max']: player.progress.max
+        })
+      }, 500)
 
-    },1000)
+    })
+
   },
   //reset
   reset() {
     app.globalData.backgroundAudioManager.pause()
     app.globalData.backgroundAudioManager.seek(0)
+    player.progress.value = 0
     app.globalData.backgroundAudioManager.play()
   },
   //seek
   seek(e) {
     //暂停后再拖动进度条,放置进度条跳动
-    app.globalData.backgroundAudioManager.pause()
     this.setData({
       seek: true,
       value: e.detail.value
     })
-    app.globalData.backgroundAudioManager.seek(e.detail.value)
+    backgroundAudioManager.pause()
+    backgroundAudioManager.seek(e.detail.value)
   }
 })

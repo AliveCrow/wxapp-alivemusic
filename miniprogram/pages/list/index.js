@@ -90,5 +90,8 @@ Page({
   //节流
   debounce(){
 
+  },
+  setList(){
+    app.globalData.playingList.willPlay=this.data.searchResult
   }
 })
