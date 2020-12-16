@@ -3,11 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="9612735d-e2be-43ae-a641-86dad502f2ec" name="默认更改列表" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/miniprogram/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/miniprogram/components/songItem/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/components/songItem/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/miniprogram/pages/Play/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/pages/Play/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/miniprogram/pages/index/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/pages/index/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/miniprogram/ulits/Player.js" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/ulits/Player.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/miniprogram/pages/Play/index.wxml" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/pages/Play/index.wxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +70,7 @@
       <workItem from="1608132685739" duration="140000" />
       <workItem from="1608132841197" duration="139000" />
       <workItem from="1608132996730" duration="1965000" />
-      <workItem from="1608135273198" duration="5500000" />
+      <workItem from="1608135273198" duration="6960000" />
     </task>
     <servers />
   </component>

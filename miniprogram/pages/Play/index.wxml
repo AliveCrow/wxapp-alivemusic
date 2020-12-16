@@ -12,7 +12,7 @@
     <!-- 进度条 -->
     <slider class="player-slider" data-currentTime="{{currentTime}}" data-duration="{{duration}}"
       value='{{progress.value}}' block-size="{{progress.blockSize}}" backgroundColor="{{progress.backgroundColor}}"
-      activeColor="#1976D2" max="{{progress.max}}" bindchange="seek"></slider>
+      activeColor="#1976D2" max="{{progress.max}}" bindchange="seek"  ></slider>
     <view class="player-control-btn">
       <view bindtap="changeMode">
         <text  wx:if="{{mode==='random'}}" class="player-mode iconfont iconsuijibofang_32"></text>
