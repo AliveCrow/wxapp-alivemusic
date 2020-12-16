@@ -2,12 +2,15 @@
 const app = getApp()
 let player = app.globalData.player
 let backgroundAudioManager
+let mode = ["random","loop","normal"]
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+    mode:'normal',
     updateId: null,
     currentTime: "00:00",
     duration: "00:00",
@@ -56,15 +59,9 @@ Page({
     wx.setNavigationBarTitle({
       title: backgroundAudioManager.title
     })
-    this.setData({
-      currentTime: player.currentTime||"00:00",
-      duration: player.duration||"00:00",
-    })
+
     backgroundAudioManager.onCanplay(() => {
       //初始化播放器-设置时长
-      this.setData({
-        songData: app.globalData.playingList.isPlaying,
-      })
       this.init()
     })
 
@@ -87,8 +84,8 @@ Page({
       player.duration = duration
       player.progress.max = Math.floor(backgroundAudioManager.duration)
       this.setData({
-        currentTime: player.currentTime,
-        duration: player.duration,
+        currentTime: player.currentTime||"00:00",
+        duration: player.duration||"00:00",
         paused: false,
         ['progress.value']: player.progress.value,
         ['progress.max']: player.progress.max
@@ -104,7 +101,10 @@ Page({
     })
     //播放结束后的动作
     backgroundAudioManager.onEnded(() => {
-      this.reset()
+      if(this.data.mode ==="loop"){
+        this.reset()
+      }
+      this.next()
     })
   },
   //
@@ -140,7 +140,7 @@ Page({
           player.progress.value = this.data.value
         }
         this.setData({
-          currentTime: player.currentTime,
+          currentTime: player.currentTime||"00:00",
           progressValue: player.progress.value,
           ['progress.value']: player.progress.value,
           ['progress.max']: player.progress.max
@@ -150,13 +150,18 @@ Page({
     })
 
   },
-  //reset
+  //loop
   reset() {
     app.globalData.backgroundAudioManager.pause()
     app.globalData.backgroundAudioManager.seek(0)
     player.progress.value = 0
     app.globalData.backgroundAudioManager.play()
   },
+  //random
+  random(){
+    app.globalData.playingList.index = parseInt(Math.random()*app.globalData.playingList.willPlay.length)
+  },
+
   //seek
   seek(e) {
     //暂停后再拖动进度条,放置进度条跳动
@@ -181,9 +186,13 @@ Page({
 
   },
   next() {
-    app.globalData.playingList.index += 1
-    if (app.globalData.playingList.index > app.globalData.playingList.willPlay.length - 1) {
-      app.globalData.playingList.index = 0
+    if(this.data.mode==="random"){
+      this.random()
+    }else{
+      app.globalData.playingList.index += 1
+      if (app.globalData.playingList.index > app.globalData.playingList.willPlay.length - 1) {
+        app.globalData.playingList.index = 0
+      }
     }
     wx.showLoading({
       title: '稍等',
@@ -191,7 +200,6 @@ Page({
     let songmid = app.globalData.playingList.willPlay[app.globalData.playingList.index].mid ||
     app.globalData.playingList.willPlay[app.globalData.playingList.index].songmid
     this.setPlayer(songmid)
-
   },
 
   setPlayer(songmid){
@@ -237,6 +245,18 @@ Page({
           })
 
       }
+    })
+  },
+  changeMode(){
+    let modeIndex = mode.findIndex(item=>item===this.data.mode)
+    if(modeIndex<3){
+      modeIndex+=1
+      if(modeIndex===3){
+        modeIndex = 0
+      }
+    }
+    this.setData({
+      mode:mode[modeIndex]
     })
   }
 })
