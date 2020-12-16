@@ -14,7 +14,7 @@
   </view>
   <view  class="mini-player-list-wapper" catchtap="hiddenList" style="{{listShow?'display:block':'display:none'}}">
     <view  bindtap="setSong"  class="mini-player-list" style="{{listShow?'display:block':'display:none'}}">
-      <view style="text-align:left;margin-bottom:10px;margin-left:10px;font-size:16px">播放列表:</view>
+      <view class="play-list" style="text-align:left;margin-bottom:10px;margin-left:10px;font-size:16px">播放列表:</view>
       <text wx:for="{{playList}}" style="{{isPlaying.track_info.mid === item.mid || isPlaying.track_info.mid === item.songmid?'color:#1976D2':''}}" wx:key="index"
         data-mid="{{item.mid}}">
         {{item.name||item.songname}}

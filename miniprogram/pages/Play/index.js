@@ -36,8 +36,6 @@ Page({
       duration: player.duration,
     })
     app.globalData.playingList.index = app.globalData.playingList.willPlay.findIndex(item => app.globalData.playingList.isPlaying.track_info.mid === item.mid || app.globalData.playingList.isPlaying.track_info.mid === item.songmid)
-
-    console.log(app.globalData);
   },
 
 
@@ -59,10 +57,8 @@ Page({
       title: backgroundAudioManager.title
     })
     this.setData({
-      paused: app.globalData.backgroundAudioManager.paused,
-      currentTime: player.currentTime,
-      ['progress.value']: player.progress.value,
-      ['progress.max']: player.progress.max
+      currentTime: player.currentTime||"00:00",
+      duration: player.duration||"00:00",
     })
     backgroundAudioManager.onCanplay(() => {
       //初始化播放器-设置时长
