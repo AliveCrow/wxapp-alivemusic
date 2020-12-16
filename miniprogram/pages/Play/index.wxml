@@ -2,9 +2,9 @@
 <view class="player">
   <image class="player-bgc" mode="aspectFill" src="{{playerBgc}}"></image>
   <!-- 歌词 -->
-  <view class="player-lyric-box">
-    {{progress.value}}
-    {{progressValue}}
+  <view scroll-y class="player-lyric-box">
+    <!-- class="isSing" -->
+      <view class="lyric" style="transition:all .8s ease;transform:translateY(-{{offsetY}})"  wx:for="{{lyricShow}}" wx:key="index" class="{{lyricIn===index?'isSing':''}}">{{item}}</view>
   </view>
 
   <!-- 控件 -->

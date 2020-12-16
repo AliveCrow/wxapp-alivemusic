@@ -57,11 +57,10 @@ Component({
       wx.request({
         url: app.globalData.api.dev+`/song?songmid=${songmid}`,
         success:(res)=>{
-          app.globalData.playingList.isPlaying = res.data.data,
           wx.request({
             url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
-            success: res => {
-              if (JSON.stringify(res.data.data) == "{}") {
+            success: url => {
+              if (JSON.stringify(url.data.data) == "{}") {
                 wx.showToast({
                   title: '歌曲需要开通绿钻或者购买',
                   icon: 'none',
@@ -69,11 +68,13 @@ Component({
                 })
                 return 
               }
+            app.globalData.playingList.isPlaying = res.data.data,
+
               backgroundAudioManager.title = this.data.name
               backgroundAudioManager.epname = this.data.album
               backgroundAudioManager.singer = this.data.singer
               backgroundAudioManager.coverImgUrl =this.data.album_img
-              backgroundAudioManager.src = res.data.data[songmid]
+              backgroundAudioManager.src = url.data.data[songmid]
               app.globalData.backgroundAudioManager = backgroundAudioManager
               // backgroundAudioManager.onCanplay((e)=>{
                 wx.hideLoading({

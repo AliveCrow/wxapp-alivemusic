@@ -4,7 +4,7 @@
   "setting": {
     "urlCheck": false,
     "es6": true,
-    "enhance": true,
+    "enhance": false,
     "postcss": true,
     "preloadBackgroundData": false,
     "minified": true,
@@ -17,7 +17,7 @@
     "checkInvalidKey": true,
     "checkSiteMap": true,
     "uploadWithSourceMap": true,
-    "compileHotReLoad": true,
+    "compileHotReLoad": false,
     "useMultiFrameRuntime": false,
     "useApiHook": true,
     "babelSetting": {
@@ -25,7 +25,7 @@
       "disablePlugins": [],
       "outputPath": ""
     },
-    "bundle": true,
+    "bundle": false,
     "useIsolateContext": true,
     "useCompilerModule": false,
     "userConfirmedUseCompilerModuleSwitch": false,

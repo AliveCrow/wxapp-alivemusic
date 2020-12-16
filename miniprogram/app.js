@@ -25,7 +25,8 @@ App({
         progress: {
           value: Number,
           max: Number,
-        }
+        },
+        mode:'normal'
       }
 
     }

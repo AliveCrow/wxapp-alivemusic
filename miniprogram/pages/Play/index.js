@@ -26,13 +26,18 @@ Page({
       activeColor: "#1976D2",
       blockSize: 3,
       backgroundColor: "#fff"
-    }
+    },
+    lyric:[],
+    lyricShow:[],
+    lyricIn:Number,
+    offsetY:"0px"
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    
     backgroundAudioManager = app.globalData.backgroundAudioManager
     this.setData({
       playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`,
@@ -59,7 +64,11 @@ Page({
     wx.setNavigationBarTitle({
       title: backgroundAudioManager.title
     })
-
+    this.setData({
+      mode:app.globalData.player.mode,
+      paused:backgroundAudioManager.paused
+    })
+    this.getLyric()
     backgroundAudioManager.onCanplay(() => {
       //初始化播放器-设置时长
       this.init()
@@ -77,6 +86,10 @@ Page({
   //初始player
   init() {
     backgroundAudioManager.onPlay(() => {
+      wx.setNavigationBarTitle({
+        title: backgroundAudioManager.title
+      })
+      this.getLyric()
       //设置全局Player变量
       let currentTime = this.formatTime(backgroundAudioManager.currentTime)
       player.currentTime = currentTime
@@ -92,6 +105,9 @@ Page({
       })
     });
 
+    backgroundAudioManager.onTimeUpdate(()=>{
+      this.scrollLyric()
+    })
 
     backgroundAudioManager.onSeeked(() => {
       this.setData({
@@ -217,6 +233,8 @@ Page({
                   icon: 'none',
                   duration: 2000
                 })
+                app.globalData.playingList.index +=1
+                this.next()
                 return
               }
               backgroundAudioManager.title = app.globalData.playingList.isPlaying.track_info.name
@@ -255,8 +273,45 @@ Page({
         modeIndex = 0
       }
     }
+    app.globalData.player.mode = mode[modeIndex]
     this.setData({
       mode:mode[modeIndex]
     })
+  },
+  getLyric(){
+    wx.request({
+      url: app.globalData.api.dev+`/lyric?songmid=${app.globalData.playingList.isPlaying.track_info.mid}`,
+      success:res=>{
+        let lyric = res.data.data.lyric.match(/^\[\d{2}:\d{2}.\d{2}](.+)$/gm)
+        this.setData({
+          lyric:lyric,
+          lyricShow:lyric.map(item=>item.slice(10))
+        })
+      }
+    })
+  },
+  lyricTime(lyric) { //返回歌词显示的时间
+		return lyric.replace(/^\[(\d{2}):(\d{2}).*/, (match, p1, p2) => 60 * (+p1) + (+p2))
+  },
+  scrollLyric(){
+    //当前播放的时间
+    let currentTime = Math.round(backgroundAudioManager.currentTime)
+    for(let i=0;i<this.data.lyric.length-1;i++){
+      // console.log(this.lyricTime(this.data.lyric[i]));
+      // if(this.lyricTime(this.data.lyric[i]) <= currentTime && ){
+
+      // }
+      if(this.lyricTime(this.data.lyric[i]) <= currentTime && ((this.data.lyric[i + 1] && this.lyricTime(this.data.lyric[i + 1] ) >=  currentTime ))){
+
+        console.log(this.data.lyricShow[i]);
+        console.log(this.data.lyricShow.findIndex(lyric=> lyric===this.data.lyricShow[i]))
+        this.setData({
+          lyricIn:this.data.lyricShow.findIndex(lyric=> lyric===this.data.lyricShow[i]),
+          offsetY:`${this.data.lyricShow.findIndex(lyric=> lyric===this.data.lyricShow[i])*35- 200}`+"px"
+        })
+				break
+
+      }
+    }
   }
 })

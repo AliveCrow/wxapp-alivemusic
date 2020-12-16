@@ -10,7 +10,7 @@
     <text class="mini-player-btn iconfont iconPlayerplay" catchtap="play" style="font-size:30px"
       wx:if="{{!isPlay}}"></text>
     <text class="mini-player-btn iconfont iconPlayerpause" catchtap="pause" style="font-size:30px" wx:else></text>
-    <text class="mini-player-btn iconfont iconList" catchtap="showList" style="font-size:20px"></text>
+    <text class="mini-player-btn iconfont iconbofangliebiao" catchtap="showList" style="font-size:20px"></text>
   </view>
   <view  class="mini-player-list-wapper" catchtap="hiddenList" style="{{listShow?'display:block':'display:none'}}">
     <view  bindtap="setSong"  class="mini-player-list" style="{{listShow?'display:block':'display:none'}}">

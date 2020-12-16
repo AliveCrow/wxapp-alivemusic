@@ -91,7 +91,7 @@ Component({
       wx.request({
         url: app.globalData.api.dev + `/song?songmid=${songmid}`,
         success: (res) => {
-          app.globalData.playingList.isPlaying = res.data.data,
+
             wx.request({
               url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
               success: url => {
@@ -103,6 +103,7 @@ Component({
                   })
                   return
                 }
+                app.globalData.playingList.isPlaying = res.data.data,
                 backgroundAudioManager.title = res.data.data.track_info.name
                 backgroundAudioManager.epname = res.data.data.track_info.album.name
                 backgroundAudioManager.singer = res.data.data.track_info.singer[0].name
