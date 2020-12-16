@@ -102,25 +102,27 @@ Page({
     });
 
     myPlayer.backgroundAudioManager.onPause(()=>{
-      myPlayer.backgroundAudioManager.seek(this.data.value)
     })
     myPlayer.backgroundAudioManager.onTimeUpdate(()=>{
       // this.scrollLyric()
+
     })
 
+    myPlayer.backgroundAudioManager.onSeeking(()=>{
+    })
     myPlayer.backgroundAudioManager.onSeeked(() => {
       this.setData({
         seek: false,
       })
-      this.update()
+
       myPlayer.backgroundAudioManager.play()
     })
     //播放结束后的动作
     myPlayer.backgroundAudioManager.onEnded(() => {
-      if(this.data.mode ==="loop"){
+      // if(this.data.mode ==="loop"){
         this.reset()
-      }
-      this.next()
+      // }
+      // this.next()
     })
   },
   //
@@ -151,6 +153,7 @@ Page({
   update() {
     this.setData({
       updateId: setInterval(() => {
+
         myPlayer.currentTime = this.formatTime(myPlayer.backgroundAudioManager.currentTime)
         myPlayer.duration = this.formatTime(myPlayer.backgroundAudioManager.duration)
         myPlayer.progress.value = Math.round(myPlayer.backgroundAudioManager.currentTime)
@@ -163,7 +166,7 @@ Page({
           ['progress.value']: myPlayer.progress.value,
           ['progress.max']: myPlayer.progress.max
         })
-      }, 1000)
+      }, 500)
 
     })
 
@@ -189,6 +192,7 @@ Page({
       value: e.detail.value,
     })
     myPlayer.backgroundAudioManager.pause()
+    myPlayer.backgroundAudioManager.seek(e.detail.value)
   },
 
 
