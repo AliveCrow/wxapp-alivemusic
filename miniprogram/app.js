@@ -1,5 +1,6 @@
 //app.js
 import {api} from './ulits/api'
+import Player from './ulits/Player'
 App({
   onLaunch: function () {
     if (!wx.cloud) {
@@ -13,7 +14,10 @@ App({
 
     this.globalData = {
       api:api,
-      backgroundAudioManager:null,
+      backgroundAudioManager:wx.getBackgroundAudioManager(),
+      myPlayer:new Player(wx.getBackgroundAudioManager()),
+
+
       playingList:{
         isPlaying:{},
         willPlay:[],

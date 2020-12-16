@@ -3,8 +3,7 @@ const app = getApp()
 let player = app.globalData.player
 let backgroundAudioManager
 let mode = ["random","loop","normal"]
-import Player from '../../ulits/Player'
-let a = new Player
+const myPlayer = app.globalData.myPlayer
 
 Page({
 
@@ -39,13 +38,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(a);
-    backgroundAudioManager = app.globalData.backgroundAudioManager
     this.setData({
-      playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`,
-      duration: player.duration,
+      playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${myPlayer.playingList.isPlaying.track_info.album.mid}.jpg`,
     })
-    app.globalData.playingList.index = app.globalData.playingList.willPlay.findIndex(item => app.globalData.playingList.isPlaying.track_info.mid === item.mid || app.globalData.playingList.isPlaying.track_info.mid === item.songmid)
+    myPlayer.playingList.index = (app.globalData.playingList.willPlay.findIndex(item => app.globalData.playingList.isPlaying.track_info.mid === item.mid || app.globalData.playingList.isPlaying.track_info.mid === item.songmid))
   },
 
 
@@ -64,17 +60,17 @@ Page({
    */
   onShow: function () {
     wx.setNavigationBarTitle({
-      title: backgroundAudioManager.title
+      title: myPlayer.backgroundAudioManager.title
     })
     this.setData({
-      mode:app.globalData.player.mode,
-      paused:backgroundAudioManager.paused
+    //   mode:app.globalData.player.mode,
+      paused:myPlayer.isPaused
     })
-    this.getLyric()
-    backgroundAudioManager.onCanplay(() => {
+    // this.getLyric()
+    myPlayer.backgroundAudioManager.onCanplay(() => {
       //初始化播放器-设置时长
-      this.init()
     })
+    this.init()
 
   },
 
@@ -87,38 +83,40 @@ Page({
 
   //初始player
   init() {
-    backgroundAudioManager.onPlay(() => {
+    myPlayer.backgroundAudioManager.onPlay(() => {
+      myPlayer.isPaused = false
       wx.setNavigationBarTitle({
-        title: backgroundAudioManager.title
+        title: myPlayer.backgroundAudioManager.title
       })
-      this.getLyric()
-      //设置全局Player变量
-      let currentTime = this.formatTime(backgroundAudioManager.currentTime)
-      player.currentTime = currentTime
-      let duration = this.formatTime(backgroundAudioManager.duration)
-      player.duration = duration
-      player.progress.max = Math.floor(backgroundAudioManager.duration)
+      // this.getLyric()
+      myPlayer.currentTime = this.formatTime(myPlayer.backgroundAudioManager.currentTime)
+      myPlayer.duration = this.formatTime(myPlayer.backgroundAudioManager.duration)
+      myPlayer.progress.max = Math.floor(myPlayer.backgroundAudioManager.duration)
       this.setData({
-        currentTime: player.currentTime||"00:00",
-        duration: player.duration||"00:00",
-        paused: false,
-        ['progress.value']: player.progress.value,
-        ['progress.max']: player.progress.max
+        currentTime:  myPlayer.currentTime,
+        duration: myPlayer.duration,
+        paused: myPlayer.isPaused,
+        ['progress.value']: myPlayer.progress.value,
+        ['progress.max']: myPlayer.progress.max
       })
     });
 
-    backgroundAudioManager.onTimeUpdate(()=>{
-      this.scrollLyric()
+    myPlayer.backgroundAudioManager.onPause(()=>{
+      myPlayer.backgroundAudioManager.seek(this.data.value)
+    })
+    myPlayer.backgroundAudioManager.onTimeUpdate(()=>{
+      // this.scrollLyric()
     })
 
-    backgroundAudioManager.onSeeked(() => {
+    myPlayer.backgroundAudioManager.onSeeked(() => {
       this.setData({
         seek: false,
       })
-      backgroundAudioManager.play()
+      this.update()
+      myPlayer.backgroundAudioManager.play()
     })
     //播放结束后的动作
-    backgroundAudioManager.onEnded(() => {
+    myPlayer.backgroundAudioManager.onEnded(() => {
       if(this.data.mode ==="loop"){
         this.reset()
       }
@@ -136,70 +134,76 @@ Page({
 
   //play
   play() {
-    app.globalData.backgroundAudioManager.play()
+    myPlayer.backgroundAudioManager.play()
+    myPlayer.isPaused = false
     this.setData({
-      paused: false
+      paused: myPlayer.isPaused 
     })
   },
   //pause
   pause() {
-    app.globalData.backgroundAudioManager.pause()
+    myPlayer.backgroundAudioManager.pause()
+    myPlayer.isPaused = true
     this.setData({
-      paused: true
+      paused: myPlayer.isPaused 
     })
   },
   update() {
     this.setData({
       updateId: setInterval(() => {
-        let currentTime = this.formatTime(backgroundAudioManager.currentTime)
-        player.currentTime = currentTime
-        player.progress.value = Math.round(backgroundAudioManager.currentTime)
+        myPlayer.currentTime = this.formatTime(myPlayer.backgroundAudioManager.currentTime)
+        myPlayer.duration = this.formatTime(myPlayer.backgroundAudioManager.duration)
+        myPlayer.progress.value = Math.round(myPlayer.backgroundAudioManager.currentTime)
         if (this.data.seek) {
-          player.progress.value = this.data.value
+          myPlayer.progress.value = this.data.value
         }
         this.setData({
-          currentTime: player.currentTime||"00:00",
-          progressValue: player.progress.value,
-          ['progress.value']: player.progress.value,
-          ['progress.max']: player.progress.max
+          currentTime: myPlayer.currentTime,
+          progressValue: myPlayer.progress.value,
+          ['progress.value']: myPlayer.progress.value,
+          ['progress.max']: myPlayer.progress.max
         })
-      }, 500)
+      }, 1000)
 
     })
 
   },
   //loop
   reset() {
-    app.globalData.backgroundAudioManager.pause()
-    app.globalData.backgroundAudioManager.seek(0)
-    player.progress.value = 0
-    app.globalData.backgroundAudioManager.play()
+    myPlayer.backgroundAudioManager.pause()
+    myPlayer.backgroundAudioManager.seek(0)
+    myPlayer.progress.value = 0
+    myPlayer.backgroundAudioManager.play()
   },
   //random
   random(){
-    app.globalData.playingList.index = parseInt(Math.random()*app.globalData.playingList.willPlay.length)
+    myPlayer.setIndex(parseInt(Math.random()*app.globalData.playingList.willPlay.length))
   },
 
   //seek
   seek(e) {
+
     //暂停后再拖动进度条,放置进度条跳动
     this.setData({
       seek: true,
-      value: e.detail.value
+      value: e.detail.value,
     })
-    backgroundAudioManager.pause()
-    backgroundAudioManager.seek(e.detail.value)
+    myPlayer.backgroundAudioManager.pause()
   },
 
+
+///////////////////////////////////////////////////
+
+
   pre() {
-    app.globalData.playingList.index -= 1
-    if (app.globalData.playingList.index < 0) {
-      app.globalData.playingList.index = app.globalData.playingList.willPlay.length - 1
+    myPlayer.playingList.index -= 1
+    if (myPlayer.playingList.index < 0) {
+      myPlayer.playingList.index = myPlayer.playingList.willPlay.length - 1
     }
     wx.showLoading({
       title: '稍等',
     })
-    let songmid = app.globalData.playingList.willPlay[app.globalData.playingList.index].mid
+    let songmid = myPlayer.playingList.willPlay[myPlayer.playingList.index].mid
     this.setPlayer(songmid)
 
   },
@@ -207,16 +211,16 @@ Page({
     if(this.data.mode==="random"){
       this.random()
     }else{
-      app.globalData.playingList.index += 1
-      if (app.globalData.playingList.index > app.globalData.playingList.willPlay.length - 1) {
-        app.globalData.playingList.index = 0
+      myPlayer.playingList.index += 1
+      if (amyPlayer.playingList.index > myPlayer.playingList.willPlay.length - 1) {
+        myPlayer.playingList.index = 0
       }
     }
     wx.showLoading({
       title: '稍等',
     })
-    let songmid = app.globalData.playingList.willPlay[app.globalData.playingList.index].mid ||
-    app.globalData.playingList.willPlay[app.globalData.playingList.index].songmid
+    let songmid = myPlayer.playingList.willPlay[myPlayer.playingList.index].mid ||
+    myPlayer.playingList.willPlay[myPlayer.playingList.index].songmid
     this.setPlayer(songmid)
   },
 
@@ -224,7 +228,6 @@ Page({
     wx.request({
       url: app.globalData.api.dev + `/song?songmid=${songmid}`,
       success: (res) => {
-        app.globalData.playingList.isPlaying = res.data.data,
 
           wx.request({
             url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
@@ -235,22 +238,25 @@ Page({
                   icon: 'none',
                   duration: 2000
                 })
-                app.globalData.playingList.index +=1
+                myPlayer.playingList.index +=1
                 this.next()
                 return
               }
-              backgroundAudioManager.title = app.globalData.playingList.isPlaying.track_info.name
-              backgroundAudioManager.epname = app.globalData.playingList.isPlaying.track_info.album.name
-              backgroundAudioManager.singer = app.globalData.playingList.isPlaying.track_info.singer
-              backgroundAudioManager.coverImgUrl = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`
-              backgroundAudioManager.src = url.data.data[songmid]
+              myPlayer.init(res.data.data.track_info,url.data.data[songmid])  
+              myPlayer.playingList.isPlaying = res.data.data,
+
+              // myPlayer.backgroundAudioManager.title = app.globalData.playingList.isPlaying.track_info.name
+              // myPlayer.backgroundAudioManager.epname = app.globalData.playingList.isPlaying.track_info.album.name
+              // myPlayer.backgroundAudioManager.singer = app.globalData.playingList.isPlaying.track_info.singer
+              // myPlayer.backgroundAudioManager.coverImgUrl = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`
+              // myPlayer.backgroundAudioManager.src = url.data.data[songmid]
               wx.hideLoading({
                 success:()=>{
                   wx.setNavigationBarTitle({
-                    title: backgroundAudioManager.title
+                    title: myPlayer.backgroundAudioManager.title
                   })
                   this.setData({
-                    playerBgc:`https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`
+                    playerBgc:`https://y.gtimg.cn/music/photo_new/T002R300x300M000${myPlayer.playingList.isPlaying.track_info.album.mid}.jpg`
                   })
                 }
               })

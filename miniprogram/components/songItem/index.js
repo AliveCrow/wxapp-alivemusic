@@ -1,6 +1,6 @@
 // components/songItem/index.js
 const app = getApp()
-const backgroundAudioManager = wx.getBackgroundAudioManager()
+const myPlayer = app.globalData.myPlayer
 Component({
   /**
    * 组件的属性列表
@@ -68,14 +68,18 @@ Component({
                 })
                 return 
               }
-            app.globalData.playingList.isPlaying = res.data.data,
+              myPlayer.init(res.data.data.track_info,url.data.data[songmid])  
+              myPlayer.playingList.isPlaying=res.data.data
 
-              backgroundAudioManager.title = this.data.name
-              backgroundAudioManager.epname = this.data.album
-              backgroundAudioManager.singer = this.data.singer
-              backgroundAudioManager.coverImgUrl =this.data.album_img
-              backgroundAudioManager.src = url.data.data[songmid]
-              app.globalData.backgroundAudioManager = backgroundAudioManager
+
+              // app.globalData.playingList.isPlaying = res.data.data,
+
+              // backgroundAudioManager.title = this.data.name
+              // backgroundAudioManager.epname = this.data.album
+              // backgroundAudioManager.singer = this.data.singer
+              // backgroundAudioManager.coverImgUrl =this.data.album_img
+              // backgroundAudioManager.src = url.data.data[songmid]
+              // app.globalData.backgroundAudioManager = backgroundAudioManager
               // backgroundAudioManager.onCanplay((e)=>{
                 wx.hideLoading({
                   success: () => {

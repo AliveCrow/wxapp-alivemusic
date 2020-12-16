@@ -60,6 +60,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    console.log(app.globalData);
     if(!app.globalData.backgroundAudioManager){
       this.setData({
         isPlaying:false
@@ -119,6 +120,7 @@ Page({
     })
   },
   setList(){
-    app.globalData.playingList.willPlay=this.data.songRecommend
+    app.globalData.myPlayer.playingList.willPlay = this.data.songRecommend
+    // app.globalData.playingList.willPlay=this.data.songRecommend
   }
 })
