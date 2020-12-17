@@ -28,7 +28,7 @@
   position: relative;
 }
 .player-slider::before{
-  content: attr(data-currentTime);
+  content: attr(data-currenttime);
   position: absolute;
   z-index: 2;
   color: #fff;

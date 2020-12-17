@@ -42,7 +42,7 @@ Page({
     this.setData({
       playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${myPlayer.playingList.isPlaying.track_info.album.mid}.jpg`,
     })
-    myPlayer.playingList.index = (app.globalData.playingList.willPlay.findIndex(item => app.globalData.playingList.isPlaying.track_info.mid === item.mid || app.globalData.playingList.isPlaying.track_info.mid === item.songmid))
+    myPlayer.playingList.index = (myPlayer.playingList.willPlay.findIndex(item =>myPlayer.playingList.isPlaying.track_info.mid === item.mid || myPlayer.playingList.isPlaying.track_info.mid === item.songmid))
   },
 
 
@@ -63,15 +63,16 @@ Page({
     wx.setNavigationBarTitle({
       title: myPlayer.backgroundAudioManager.title
     })
+    this.getLyric()
     this.setData({
       //   mode:app.globalData.player.mode,
       paused: myPlayer.isPaused
     })
-    // this.getLyric()
     myPlayer.backgroundAudioManager.onCanplay(() => {
       //初始化播放器-设置时长
     })
     this.init()
+
 
   },
 
@@ -93,6 +94,7 @@ Page({
       myPlayer.currentTime = this.formatTime(myPlayer.backgroundAudioManager.currentTime)
       myPlayer.duration = this.formatTime(myPlayer.backgroundAudioManager.duration)
       myPlayer.progress.max = Math.floor(myPlayer.backgroundAudioManager.duration)
+
       this.setData({
         currentTime: myPlayer.currentTime,
         duration: myPlayer.duration,
@@ -107,7 +109,7 @@ Page({
 
     })
     myPlayer.backgroundAudioManager.onTimeUpdate(() => {
-      // this.scrollLyric()
+      this.scrollLyric()
 
     })
 
@@ -118,17 +120,17 @@ Page({
       this.setData({
         seek: false,
       })
-      console.log('进度改变完成')
-        this.update()
+      this.update()
       myPlayer.backgroundAudioManager.play()
 
     })
     //播放结束后的动作
     myPlayer.backgroundAudioManager.onEnded(() => {
-      // if(this.data.mode ==="loop"){
-      this.reset()
-      // }
-      // this.next()
+      console.log(myPlayer);
+      if (myPlayer.mode === "loop") {
+        this.reset()
+      }
+      this.next()
     })
   },
   //
@@ -139,7 +141,6 @@ Page({
     if (sec < 10) sec = '0' + sec
     return `${min}:${sec}`
   },
-
   //play
   play() {
     myPlayer.backgroundAudioManager.play()
@@ -180,7 +181,7 @@ Page({
   },
   //random
   random() {
-    myPlayer.setIndex(parseInt(Math.random() * app.globalData.playingList.willPlay.length))
+    myPlayer.playingList.index = parseInt(Math.random() * myPlayer.playingList.willPlay.length)
   },
 
   seek(e) {
@@ -199,10 +200,6 @@ Page({
     myPlayer.backgroundAudioManager.seek(e.detail.value)
   },
 
-
-  ///////////////////////////////////////////////////
-
-
   pre() {
     myPlayer.playingList.index -= 1
     if (myPlayer.playingList.index < 0) {
@@ -220,7 +217,7 @@ Page({
       this.random()
     } else {
       myPlayer.playingList.index += 1
-      if (amyPlayer.playingList.index > myPlayer.playingList.willPlay.length - 1) {
+      if (myPlayer.playingList.index > myPlayer.playingList.willPlay.length - 1) {
         myPlayer.playingList.index = 0
       }
     }
@@ -236,7 +233,6 @@ Page({
     wx.request({
       url: app.globalData.api.dev + `/song?songmid=${songmid}`,
       success: (res) => {
-
         wx.request({
           url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
           success: url => {
@@ -252,12 +248,7 @@ Page({
             }
             myPlayer.init(res.data.data.track_info, url.data.data[songmid])
             myPlayer.playingList.isPlaying = res.data.data,
-
-              // myPlayer.backgroundAudioManager.title = app.globalData.playingList.isPlaying.track_info.name
-              // myPlayer.backgroundAudioManager.epname = app.globalData.playingList.isPlaying.track_info.album.name
-              // myPlayer.backgroundAudioManager.singer = app.globalData.playingList.isPlaying.track_info.singer
-              // myPlayer.backgroundAudioManager.coverImgUrl = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${app.globalData.playingList.isPlaying.track_info.album.mid}.jpg`
-              // myPlayer.backgroundAudioManager.src = url.data.data[songmid]
+            this.getLyric()
               wx.hideLoading({
                 success: () => {
                   wx.setNavigationBarTitle({
@@ -281,6 +272,7 @@ Page({
       }
     })
   },
+
   changeMode() {
     let modeIndex = mode.findIndex(item => item === this.data.mode)
     if (modeIndex < 3) {
@@ -289,14 +281,14 @@ Page({
         modeIndex = 0
       }
     }
-    app.globalData.player.mode = mode[modeIndex]
+    myPlayerwe.mode = mode[modeIndex]
     this.setData({
       mode: mode[modeIndex]
     })
   },
   getLyric() {
     wx.request({
-      url: app.globalData.api.dev + `/lyric?songmid=${app.globalData.playingList.isPlaying.track_info.mid}`,
+      url: app.globalData.api.dev + `/lyric?songmid=${myPlayer.playingList.isPlaying.track_info.mid}`,
       success: res => {
         let lyric = res.data.data.lyric.match(/^\[\d{2}:\d{2}.\d{2}](.+)$/gm)
         this.setData({
@@ -311,23 +303,16 @@ Page({
   },
   scrollLyric() {
     //当前播放的时间
-    let currentTime = Math.round(backgroundAudioManager.currentTime)
-    for (let i = 0; i < this.data.lyric.length - 1; i++) {
-      // console.log(this.lyricTime(this.data.lyric[i]));
-      // if(this.lyricTime(this.data.lyric[i]) <= currentTime && ){
-
-      // }
-      if (this.lyricTime(this.data.lyric[i]) <= currentTime && ((this.data.lyric[i + 1] && this.lyricTime(this.data.lyric[i + 1]) >= currentTime))) {
-
-        console.log(this.data.lyricShow[i]);
-        console.log(this.data.lyricShow.findIndex(lyric => lyric === this.data.lyricShow[i]))
+    let currentTime = Math.round(myPlayer.backgroundAudioManager.currentTime)
+    for (let i = 0; i < this.data.lyric.length; i++) {
+      if (this.lyricTime(this.data.lyric[i]) <= currentTime && (!this.data.lyric[i + 1] || this.lyricTime(this.data.lyric[i + 1]) >= currentTime)) {
         this.setData({
-          lyricIn: this.data.lyricShow.findIndex(lyric => lyric === this.data.lyricShow[i]),
-          offsetY: `${this.data.lyricShow.findIndex(lyric => lyric === this.data.lyricShow[i]) * 35 - 200}` + "px"
+          lyricIn: i,
+          offsetY: `${i * 35 - 200}` + "px"
         })
         break
-
       }
+
     }
   }
 })

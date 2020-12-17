@@ -10,7 +10,7 @@
   <!-- 控件 -->
   <view class="player-control">
     <!-- 进度条 -->
-    <slider class="player-slider" data-currentTime="{{currentTime}}" data-duration="{{duration}}"
+    <slider class="player-slider" data-currenttime="{{currentTime}}" data-duration="{{duration}}"
       value='{{progress.value}}' block-size="{{progress.blockSize}}" backgroundColor="{{progress.backgroundColor}}"
       activeColor="#1976D2" max="{{progress.max}}" bindchange="seek"  ></slider>
     <view class="player-control-btn">

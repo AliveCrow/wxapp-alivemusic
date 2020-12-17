@@ -1,5 +1,6 @@
 // components/mini-player/index.js
 const app = getApp()
+const myPlayer = app.globalData.myPlayer
 Component({
   /**
    * 组件的属性列表
@@ -21,30 +22,31 @@ Component({
 
   lifetimes: {
     attached: function () {
+      console.log(myPlayer);
       this.setData({
-        isPlaying: app.globalData.playingList.isPlaying,
-        playList: app.globalData.playingList.willPlay,
+        isPlaying: myPlayer.playingList.isPlaying,
+        playList: myPlayer.playingList.willPlay,
         songData: {
-          title: app.globalData.backgroundAudioManager.title,
-          coverUrl: app.globalData.backgroundAudioManager.coverImgUrl,
+          title: myPlayer.backgroundAudioManager.title,
+          coverUrl: myPlayer.backgroundAudioManager.coverImgUrl,
         }
       })
-      app.globalData.playingList.index = this.data.playList.findIndex(item => this.data.isPlaying.track_info.mid === item.mid || this.data.isPlaying.track_info.mid === item.songmid)
+      myPlayer.playingList.index = this.data.playList.findIndex(item => this.data.isPlaying.track_info.mid === item.mid || this.data.isPlaying.track_info.mid === item.songmid)
     }
   },
 
   pageLifetimes: {
     show: function () {
       this.setData({
-        isPlaying: app.globalData.playingList.isPlaying,
-        playList: app.globalData.playingList.willPlay,
-        isPlay: !app.globalData.backgroundAudioManager.paused,
+        isPlaying: myPlayer.playingList.isPlaying,
+        playList: myPlayer.playingList.willPlay,
+        isPlay: !myPlayer.isPaused,
         songData: {
-          title: app.globalData.backgroundAudioManager.title,
-          coverUrl: app.globalData.backgroundAudioManager.coverImgUrl,
+          title: myPlayer.backgroundAudioManager.title,
+          coverUrl: myPlayer.backgroundAudioManager.coverImgUrl,
         }
       })
-      app.globalData.playingList.index = this.data.playList.findIndex(item => this.data.isPlaying.track_info.mid === item.mid || this.data.isPlaying.track_info.mid === item.songmid)
+      myPlayer.playingList.index = this.data.playList.findIndex(item => this.data.isPlaying.track_info.mid === item.mid || this.data.isPlaying.track_info.mid === item.songmid)
     },
   },
   /**
@@ -60,15 +62,17 @@ Component({
       })
     },
     play() {
-      app.globalData.backgroundAudioManager.play()
+      myPlayer.backgroundAudioManager.play()
+      myPlayer.isPaused = false
       this.setData({
-        isPlay: true
+        isPlay: !myPlayer.isPaused
       })
     },
     pause() {
-      app.globalData.backgroundAudioManager.pause()
+      myPlayer.backgroundAudioManager.pause()
+      myPlayer.isPaused = true
       this.setData({
-        isPlay: false
+        isPlay: !myPlayer.isPaused
       })
     },
     showList() {
@@ -86,7 +90,7 @@ Component({
         title: '稍等',
       })
       let songmid = e.target.dataset.mid
-      let backgroundAudioManager = app.globalData.backgroundAudioManager
+      let backgroundAudioManager = myPlayer.backgroundAudioManager
 
       wx.request({
         url: app.globalData.api.dev + `/song?songmid=${songmid}`,
@@ -103,12 +107,9 @@ Component({
                   })
                   return
                 }
-                app.globalData.playingList.isPlaying = res.data.data,
-                backgroundAudioManager.title = res.data.data.track_info.name
-                backgroundAudioManager.epname = res.data.data.track_info.album.name
-                backgroundAudioManager.singer = res.data.data.track_info.singer[0].name
-                backgroundAudioManager.coverImgUrl = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${res.data.data.track_info.album.mid}.jpg`
-                backgroundAudioManager.src = url.data.data[res.data.data.track_info.mid]
+                myPlayer.init(res.data.data.track_info, url.data.data[songmid])
+                myPlayer.playingList.isPlaying = res.data.data,
+
                 backgroundAudioManager.onCanplay(() => {
                   wx.hideLoading({
                     success: () => {
