@@ -6,7 +6,8 @@
     "pages/songList/index",
     "pages/more/index",
     "pages/rank/index",
-    "pages/Play/index"
+    "pages/Play/index",
+    "pages/User/index/index"
   ],
   "requiredBackgroundModes": ["audio"],
   "window": {
@@ -29,7 +30,7 @@
 
       },
       {
-        "pagePath": "pages/search/index",
+        "pagePath": "pages/User/index/index",
         "iconPath":"./assets/image/user.png",
         "selectedIconPath": "./assets/image/user-selected.png"
       }

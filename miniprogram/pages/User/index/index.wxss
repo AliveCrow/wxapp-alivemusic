@@ -1,0 +1,54 @@
+/* pages/User/index/index.wxss */
+
+.user-home{
+  height: 100vh;
+  overflow:auto;
+}
+
+.layout-card{
+  height: 160px;
+  margin: 10px;
+  border-radius: 10px;
+  color: #fff;
+  overflow: hidden;
+}
+
+.my-favorites{
+  display: flex;
+  flex-direction: row;
+}
+.favorites{
+  flex-grow: 1;
+  margin: 10px;
+  border-radius:5px;
+  color: #fff;
+  font-weight: 300;
+  text-align: center;
+  line-height: 60px;
+  font-size: 18px;
+  height: 60px;
+}
+.song{
+  background-color: red;
+}
+.song-list{
+  background-color: blue;
+
+}
+
+.user-info{
+  background-color: black;
+}
+
+.login{
+  height: 30px;
+  color: #000;
+  line-height: 30px;
+  text-align: center;
+  font-size: 10px;
+  margin: 10px 50px;
+  border: 1px solid red;
+  border-radius: 5px;
+}
+
+

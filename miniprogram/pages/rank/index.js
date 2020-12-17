@@ -103,10 +103,10 @@ Page({
           list:res.data.data.list
 
         })
+        wx.setNavigationBarTitle({
+          title: this.data.rankData.info.title,
+        })
       }
     })
-  },
-  setList(){
-    app.globalData.playingList.willPlay=this.data.list
   }
 })

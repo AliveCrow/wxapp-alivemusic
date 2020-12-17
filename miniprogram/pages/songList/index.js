@@ -81,6 +81,9 @@ Page({
           pic:res.data.data.logo,
           songList:res.data.data.songlist.slice(0,100)
         })
+        wx.setNavigationBarTitle({
+          title: this.data.title,
+        })
       }
     })
   },
@@ -94,8 +97,5 @@ Page({
       showCancel:false,
       confirmText:'关闭'
     })
-  },
-  setList(){
-    app.globalData.playingList.willPlay=this.data.songList
   }
 })

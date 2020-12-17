@@ -1,10 +1,7 @@
 // pages/Play/index.js
 const app = getApp()
-let player = app.globalData.player
-let backgroundAudioManager
 let mode = ["random", "loop", "normal"]
 let myPlayer 
-
 Page({
 
   /**
@@ -51,6 +48,9 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
+    wx.setNavigationBarTitle({
+      title: myPlayer.__.title
+    }) 
     this.update()
   },
 
@@ -58,14 +58,11 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    wx.setNavigationBarTitle({
-      title: myPlayer.__.title
-    })
+    this.init()
+    this.getLyric()
     this.setData({
       paused: myPlayer.isPaused,
     })
-    this.init()
-    this.getLyric()
   },
 
   onUnload: function () {
@@ -75,11 +72,11 @@ Page({
 
   //初始player
   init() { 
-    myPlayer.__.onPlay(()=>{
+
+    myPlayer.__.onPlay(()=>{  
       wx.setNavigationBarTitle({
         title: myPlayer.__.title
-      })
-    
+      }) 
       myPlayer.isPaused = false
       myPlayer.currentTime = this.formatTime(myPlayer.__.currentTime)
       myPlayer.duration = this.formatTime(myPlayer.__.duration)
@@ -94,20 +91,8 @@ Page({
         move: true
       })
     })
-
-    myPlayer.__.onTimeUpdate(()=>{
-      console.log('233');
-    })
-
-    myPlayer.__.onPause(() => {
-
-    })
     myPlayer.__.onTimeUpdate(() => {
       this.scrollLyric()
-    })
-
-    myPlayer.__.onSeeking(() => {
-
     })
     myPlayer.__.onSeeked(() => {
       this.setData({
@@ -187,48 +172,31 @@ Page({
     }
   },
   setPlayer(songmid) { 
-    wx.request({ 
-      url: app.globalData.api.dev + `/song?songmid=${songmid}`, 
-      success: (res) => { 
-        wx.request({ 
-          url: app.globalData.api.dev + `/song/urls?id=${songmid}`, 
-          success: url => { 
-            if (JSON.stringify(url.data.data) == "{}") { 
-              wx.showToast({ 
-                title: '歌曲需要开通绿钻或者购买', 
-                icon: 'none', 
-                duration: 2000 
-              }) 
-              myPlayer.playingList.index += 1 
-              this.next() 
-              return 
-            } 
-            myPlayer.init(songmid) 
-            myPlayer.playingList.isPlaying = res.data.data, 
-              this.setData({
-                lyric: myPlayer.lyric.lyric,
-                lyricShow: myPlayer.lyric.lyricShow
-              })
-              wx.hideLoading({ 
-                success: () => { 
-                  this.getLyric()
-                  this.setData({ 
-                    playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${myPlayer.playingList.isPlaying.track_info.album.mid}.jpg` 
-                  }) 
-                } 
-              }) 
-          }, 
-          fail: error => { 
-            wx.showToast({ 
-              title: '接口错误', 
-              icon: 'fail', 
-              duration: 2000 
+    myPlayer.reSetSong(songmid).then((res)=>{
+      myPlayer.init(songmid) 
+      myPlayer.playingList.isPlaying = res.res.data.data, 
+        this.setData({
+          lyric: myPlayer.lyric.lyric,
+          lyricShow: myPlayer.lyric.lyricShow
+        })
+        wx.hideLoading({ 
+          success: () => { 
+            this.getLyric()
+            this.setData({ 
+              playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${myPlayer.playingList.isPlaying.track_info.album.mid}.jpg` 
             }) 
           } 
         }) 
- 
-      } 
+    }).catch(error=>{
+      wx.showToast({ 
+        title: '歌曲需要开通绿钻或者购买', 
+        icon: 'none', 
+        duration: 2000 
+      }) 
+      myPlayer.playingList.index += 1 
+      this.next() 
     })
+
   },
   getLyric(){
     wx.request({

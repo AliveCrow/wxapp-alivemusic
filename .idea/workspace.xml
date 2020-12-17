@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9612735d-e2be-43ae-a641-86dad502f2ec" name="默认更改列表" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/miniprogram/components/mini-player/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/components/mini-player/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/miniprogram/pages/Play/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/pages/Play/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/miniprogram/pages/Play/index.wxml" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/pages/Play/index.wxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/miniprogram/pages/Play/index.wxss" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/pages/Play/index.wxss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/miniprogram/pages/index/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/pages/index/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/miniprogram/ulits/Player.js" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/ulits/Player.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/project.config.json" afterDir="false" />
-    </list>
+    <list default="true" id="9612735d-e2be-43ae-a641-86dad502f2ec" name="默认更改列表" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,7 +67,7 @@
       <workItem from="1608132841197" duration="139000" />
       <workItem from="1608132996730" duration="1965000" />
       <workItem from="1608135273198" duration="7199000" />
-      <workItem from="1608177562846" duration="1382000" />
+      <workItem from="1608177562846" duration="1908000" />
     </task>
     <servers />
   </component>

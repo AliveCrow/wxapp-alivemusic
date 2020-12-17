@@ -1,0 +1,19 @@
+<view class="user-home">
+
+  <view class="layout-card user-info">
+
+  </view>
+  <view class=" my-favorites">
+    <view class="favorites song ">
+      我喜欢
+    </view>
+    <view class="favorites song-list ">
+      收藏的歌单
+    </view>
+  </view>
+  <view style="position:absolute;bottom:20px;width:100%">
+    <view class="login">
+      微信登录
+    </view>
+  </view>
+</view>

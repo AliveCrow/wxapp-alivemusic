@@ -5,7 +5,7 @@ export default class Player {
 		this.__ = wx.getBackgroundAudioManager();
 		this.currentTime = "00:00"
 		this.duration = "00:00";
-		this.modes=["random", "loop", "normal"];
+		this.modes = ["random", "loop", "normal"];
 		this.mode = 'normal';
 		this.isPaused = true;
 		this.updateId = null;
@@ -47,13 +47,13 @@ export default class Player {
 						this.__.singer = songData.singer
 						this.__.coverImgUrl = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${songData.album.mid}.jpg`
 						this.__.src = res_SongUrl.data.data[songmid]
-							wx.hideLoading({
-								success: () => {
-									wx.navigateTo({
-										url: '/pages/Play/index'
-									})
-								},
-							})
+						wx.hideLoading({
+							success: () => {
+								wx.navigateTo({
+									url: '/pages/Play/index'
+								})
+							},
+						})
 
 					}
 				})
@@ -68,50 +68,34 @@ export default class Player {
 			}
 		})
 	}
+	reSetSong(songmid) {
 
-	reinit(songmid,_this){
-		wx.request({
-      url: api.dev + `/song?songmid=${songmid}`,
-      success: (res) => {
-        wx.request({
-          url: api.dev + `/song/urls?id=${songmid}`,
-          success: url => {
-            if (JSON.stringify(url.data.data) == "{}") {
-              wx.showToast({
-                title: '歌曲需要开通绿钻或者购买',
-                icon: 'none',
-                duration: 2000
-              })
-              // this.playingList.index += 1
-              this.next()
-              return
-            }
-            this.playingList.isPlaying = res.data.data
-						let songData = res.data.data.track_info
-						this.__.title = songData.name
-						this.__.epname = songData.album.name
-						this.__.singer = songData.singer
-						this.__.coverImgUrl = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${songData.album.mid}.jpg`
-						this.__.src = url.data.data[songmid]
-              wx.hideLoading({
-                success: () => {
-                  _this.setData({
-                    playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${this.playingList.isPlaying.track_info.album.mid}.jpg`
-                  })
-                }
-              })
-          },
-          fail: error => {
-            wx.showToast({
-              title: '接口错误',
-              icon: 'fail',
-              duration: 2000
-            })
-          }
-        })
+		return new Promise((resolve, reject) => {
+			wx.request({
+				url: api.dev + `/song?songmid=${songmid}`,
+				success: (res) => {
+					wx.request({
+						url: api.dev + `/song/urls?id=${songmid}`,
+						success: url => {
+							if (JSON.stringify(url.data.data) == "{}") {
+								reject()
+								return
+							}
+							resolve({ res: res, url: url })
+						},
+						fail: error => {
+							wx.showToast({
+								title: '接口错误',
+								icon: 'fail',
+								duration: 2000
+							})
+						}
+					})
+				}
+			})
 
-      }
-    })
+		})
+
 	}
 	whichIsPlaying() {
 		this.playingList.index = (this.playingList.willPlay.findIndex(item => this.playingList.isPlaying.track_info.mid === item.mid || this.playingList.isPlaying.track_info.mid === item.songmid))
@@ -173,29 +157,31 @@ export default class Player {
 	}
 	next() {
 		if (this.mode === "random") {
-      this.random()
-    } else {
-      this.playingList.index += 1
-      if (this.playingList.index > this.playingList.willPlay.length - 1) {
-        this.playingList.index = 0
-      }
-    }
-    wx.showLoading({
-      title: '稍等',
-    })
-    let songmid = this.playingList.willPlay[this.playingList.index].mid ||
-		this.playingList.willPlay[this.playingList.index].songmid
-			return songmid
+			this.random()
+		} else {
+			this.playingList.index += 1
+			if (this.playingList.index > this.playingList.willPlay.length - 1) {
+				this.playingList.index = 0
+			}
+		}
+		wx.showLoading({
+			title: '稍等',
+		})
+
+		let songmid = this.playingList.willPlay[this.playingList.index].mid ||
+			this.playingList.willPlay[this.playingList.index].songmid
+
+		return songmid
 	}
-	changeMode(){
+	changeMode() {
 		let modeIndex = this.modes.findIndex(item => item === this.mode)
-    if (modeIndex < 3) {
-      modeIndex += 1
-      if (modeIndex === 3) {
-        modeIndex = 0
-      }
-    }
-    this.mode = this.modes[modeIndex]
+		if (modeIndex < 3) {
+			modeIndex += 1
+			if (modeIndex === 3) {
+				modeIndex = 0
+			}
+		}
+		this.mode = this.modes[modeIndex]
 	}
 	formatTime(time) {
 		let min = Math.floor(time / 60)

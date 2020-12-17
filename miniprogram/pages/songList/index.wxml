@@ -7,6 +7,6 @@
       <rich-text bindtap="showDesc" class="song-list-dec" nodes="{{desc}}"></rich-text>
     </view>
   </view>
-  <songItem bindtap="setList" wx:for="{{songList}}" wx:key='index' songmid='{{item.songmid}}'></songItem>
+  <songItem wx:for="{{songList}}" willPlay="{{songList}}" wx:key='index' songmid='{{item.songmid}}'></songItem>
 </view>
 

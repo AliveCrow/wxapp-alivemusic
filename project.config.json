@@ -80,6 +80,12 @@
         {
           "name": "pages/Play/index",
           "pathName": "pages/Play/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/User/index/index",
+          "pathName": "pages/User/index/index",
           "scene": null
         }
       ]
