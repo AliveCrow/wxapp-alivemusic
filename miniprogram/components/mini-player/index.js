@@ -22,31 +22,30 @@ Component({
 
   lifetimes: {
     attached: function () {
-      console.log(myPlayer);
+      myPlayer.whichIsPlaying()
       this.setData({
         isPlaying: myPlayer.playingList.isPlaying,
         playList: myPlayer.playingList.willPlay,
         songData: {
-          title: myPlayer.backgroundAudioManager.title,
-          coverUrl: myPlayer.backgroundAudioManager.coverImgUrl,
+          title: myPlayer.__.title,
+          coverUrl: myPlayer.__.coverImgUrl,
         }
       })
-      myPlayer.playingList.index = this.data.playList.findIndex(item => this.data.isPlaying.track_info.mid === item.mid || this.data.isPlaying.track_info.mid === item.songmid)
     }
   },
 
   pageLifetimes: {
     show: function () {
+      myPlayer.whichIsPlaying()
       this.setData({
         isPlaying: myPlayer.playingList.isPlaying,
         playList: myPlayer.playingList.willPlay,
         isPlay: !myPlayer.isPaused,
         songData: {
-          title: myPlayer.backgroundAudioManager.title,
-          coverUrl: myPlayer.backgroundAudioManager.coverImgUrl,
+          title: myPlayer.__.title,
+          coverUrl: myPlayer.__.coverImgUrl,
         }
       })
-      myPlayer.playingList.index = this.data.playList.findIndex(item => this.data.isPlaying.track_info.mid === item.mid || this.data.isPlaying.track_info.mid === item.songmid)
     },
   },
   /**
@@ -57,20 +56,17 @@ Component({
       wx.navigateTo({
         url: '/pages/Play/index',
         success: r => {
-          console.log(app.globalData);
         }
       })
     },
     play() {
-      myPlayer.backgroundAudioManager.play()
-      myPlayer.isPaused = false
+      myPlayer.play()
       this.setData({
         isPlay: !myPlayer.isPaused
       })
     },
     pause() {
-      myPlayer.backgroundAudioManager.pause()
-      myPlayer.isPaused = true
+      myPlayer.pause()
       this.setData({
         isPlay: !myPlayer.isPaused
       })
@@ -90,51 +86,15 @@ Component({
         title: '稍等',
       })
       let songmid = e.target.dataset.mid
-      let backgroundAudioManager = myPlayer.backgroundAudioManager
-
       wx.request({
-        url: app.globalData.api.dev + `/song?songmid=${songmid}`,
-        success: (res) => {
-
-            wx.request({
-              url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
-              success: url => {
-                if (JSON.stringify(url.data.data) == "{}") {
-                  wx.showToast({
-                    title: '歌曲需要开通绿钻或者购买',
-                    icon: 'none',
-                    duration: 2000
-                  })
-                  return
-                }
-                myPlayer.init(res.data.data.track_info, url.data.data[songmid])
-                myPlayer.playingList.isPlaying = res.data.data,
-
-                backgroundAudioManager.onCanplay(() => {
-                  wx.hideLoading({
-                    success: () => {
-                      wx.navigateTo({
-                        url: '/pages/Play/index',
-                      })
-                    },
-                  })
-                })
-
-
-                // })
-              },
-              fail: error => {
-                wx.showToast({
-                  title: '接口错误',
-                  icon: 'fail',
-                  duration: 2000
-                })
-              }
-            })
+        url: app.globalData.api.dev +`/song?songmid=${songmid}`,
+        success:res=>{
+          myPlayer.init(songmid)
+          myPlayer.playingList.isPlaying = res.data.data
 
         }
       })
-
+      
     },
 
   }

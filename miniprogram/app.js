@@ -15,9 +15,7 @@ App({
     this.globalData = {
       api:api,
       backgroundAudioManager:wx.getBackgroundAudioManager(),
-      myPlayer:new Player(wx.getBackgroundAudioManager()),
-
-
+      myPlayer:new Player(),
       playingList:{
         isPlaying:{},
         willPlay:[],

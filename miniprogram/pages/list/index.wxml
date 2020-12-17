@@ -1,6 +1,6 @@
 <!--pages/list/index.wxml-->
 <view class="list-container">
   <view class="list-content">
-    <songItem bindtap="setList" wx:for="{{searchResult}}" wx:key='index'  songmid='{{item.songmid}}'></songItem>
+    <songItem   wx:for="{{searchResult}}" willPlay="{{searchResult}}"  wx:key='index'  songmid='{{item.songmid}}'></songItem>
   </view>
 </view>

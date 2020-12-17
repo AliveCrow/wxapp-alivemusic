@@ -60,12 +60,13 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    if(!app.globalData.myPlayer.isPaused){
-      this.setData({
-        isPlaying:true
-      })
+    if(app.globalData.myPlayer!==null){
+      if(!app.globalData.myPlayer.isPaused){
+        this.setData({
+          isPlaying:true
+        })
+      }
     }
-
   },
 
   /**
@@ -115,8 +116,9 @@ Page({
       url: `/pages/songList/index?content_id=${e.currentTarget.dataset.content_id}`
     })
   },
-  setList(){
-    app.globalData.myPlayer.playingList.willPlay = this.data.songRecommend
+  setList(e){
+
+    // myPlayer.playingList.willPlay = this.data.songRecommend
     // app.globalData.playingList.willPlay=this.data.songRecommend
   }
 })

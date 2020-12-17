@@ -92,6 +92,6 @@ Page({
 
   },
   setList(){
-    app.globalData.playingList.willPlay=this.data.searchResult
+
   }
 })

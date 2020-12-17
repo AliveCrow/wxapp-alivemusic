@@ -3,7 +3,7 @@ const app = getApp()
 let player = app.globalData.player
 let backgroundAudioManager
 let mode = ["random", "loop", "normal"]
-const myPlayer = app.globalData.myPlayer
+let myPlayer 
 
 Page({
 
@@ -39,10 +39,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    myPlayer = app.globalData.myPlayer
     this.setData({
       playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${myPlayer.playingList.isPlaying.track_info.album.mid}.jpg`,
     })
-    myPlayer.playingList.index = (myPlayer.playingList.willPlay.findIndex(item =>myPlayer.playingList.isPlaying.track_info.mid === item.mid || myPlayer.playingList.isPlaying.track_info.mid === item.songmid))
+    myPlayer.whichIsPlaying()
   },
 
 
@@ -50,10 +51,7 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    // console.log('onReady');
     this.update()
-
-
   },
 
   /**
@@ -61,39 +59,31 @@ Page({
    */
   onShow: function () {
     wx.setNavigationBarTitle({
-      title: myPlayer.backgroundAudioManager.title
+      title: myPlayer.__.title
     })
-    this.getLyric()
     this.setData({
-      //   mode:app.globalData.player.mode,
-      paused: myPlayer.isPaused
-    })
-    myPlayer.backgroundAudioManager.onCanplay(() => {
-      //初始化播放器-设置时长
+      paused: myPlayer.isPaused,
     })
     this.init()
-
-
+    this.getLyric()
   },
 
   onUnload: function () {
-    clearInterval(this.data.updateId)
-    this.setData({
-      updateId: null
-    })
+    clearInterval(myPlayer.updateId)
+    myPlayer.updateId = null
   },
 
   //初始player
-  init() {
-    myPlayer.backgroundAudioManager.onPlay(() => {
-      myPlayer.isPaused = false
+  init() { 
+    myPlayer.__.onPlay(()=>{
       wx.setNavigationBarTitle({
-        title: myPlayer.backgroundAudioManager.title
+        title: myPlayer.__.title
       })
-      // this.getLyric()
-      myPlayer.currentTime = this.formatTime(myPlayer.backgroundAudioManager.currentTime)
-      myPlayer.duration = this.formatTime(myPlayer.backgroundAudioManager.duration)
-      myPlayer.progress.max = Math.floor(myPlayer.backgroundAudioManager.duration)
+    
+      myPlayer.isPaused = false
+      myPlayer.currentTime = this.formatTime(myPlayer.__.currentTime)
+      myPlayer.duration = this.formatTime(myPlayer.__.duration)
+      myPlayer.progress.max = Math.floor(myPlayer.__.duration)
 
       this.setData({
         currentTime: myPlayer.currentTime,
@@ -103,32 +93,34 @@ Page({
         ['progress.max']: myPlayer.progress.max,
         move: true
       })
-    });
+    })
 
-    myPlayer.backgroundAudioManager.onPause(() => {
+    myPlayer.__.onTimeUpdate(()=>{
+      console.log('233');
+    })
+
+    myPlayer.__.onPause(() => {
 
     })
-    myPlayer.backgroundAudioManager.onTimeUpdate(() => {
+    myPlayer.__.onTimeUpdate(() => {
       this.scrollLyric()
-
     })
 
-    myPlayer.backgroundAudioManager.onSeeking(() => {
+    myPlayer.__.onSeeking(() => {
 
     })
-    myPlayer.backgroundAudioManager.onSeeked(() => {
+    myPlayer.__.onSeeked(() => {
       this.setData({
         seek: false,
       })
       this.update()
-      myPlayer.backgroundAudioManager.play()
-
+      myPlayer.__.play()
     })
     //播放结束后的动作
-    myPlayer.backgroundAudioManager.onEnded(() => {
-      console.log(myPlayer);
+    myPlayer.__.onEnded(() => {
       if (myPlayer.mode === "loop") {
-        this.reset()
+        myPlayer.reset()
+        return 
       }
       this.next()
     })
@@ -143,159 +135,38 @@ Page({
   },
   //play
   play() {
-    myPlayer.backgroundAudioManager.play()
-    myPlayer.isPaused = false
+    myPlayer.play()
     this.setData({
       paused: myPlayer.isPaused
     })
   },
   //pause
   pause() {
-    myPlayer.backgroundAudioManager.pause()
-    myPlayer.isPaused = true
+    myPlayer.pause()
     this.setData({
       paused: myPlayer.isPaused
     })
   },
   update() {
     this.setData({
-      updateId: setInterval(() => {
-        myPlayer.currentTime = this.formatTime(myPlayer.backgroundAudioManager.currentTime)
-        myPlayer.duration = this.formatTime(myPlayer.backgroundAudioManager.duration)
-        myPlayer.progress.value = Math.round(myPlayer.backgroundAudioManager.currentTime)
-        this.setData({
-          currentTime: myPlayer.currentTime,
-          progressValue: myPlayer.progress.value,
-          ['progress.value']: myPlayer.progress.value,
-          ['progress.max']: myPlayer.progress.max
-        })
-      }, 500)
+      updateId:myPlayer.update(500,this)
     })
   },
-  //loop
-  reset() {
-    myPlayer.backgroundAudioManager.pause()
-    myPlayer.backgroundAudioManager.seek(0)
-    myPlayer.progress.value = 0
-    myPlayer.backgroundAudioManager.play()
-  },
-  //random
-  random() {
-    myPlayer.playingList.index = parseInt(Math.random() * myPlayer.playingList.willPlay.length)
-  },
-
   seek(e) {
-    clearInterval(this.data.updateId)
-    this.setData({
-      updateId: null,
-    })
-    //暂停后再拖动进度条,放置进度条跳动
-    this.setData({
-      seek: true,
-      value: e.detail.value,
-      ['progress.value']: e.detail.value,
-      ['progress.max']: myPlayer.progress.max,
-    })
-    myPlayer.progress.value = e.detail.value
-    myPlayer.backgroundAudioManager.seek(e.detail.value)
+    myPlayer.seek(e.detail.value,this)
   },
-
   pre() {
-    myPlayer.playingList.index -= 1
-    if (myPlayer.playingList.index < 0) {
-      myPlayer.playingList.index = myPlayer.playingList.willPlay.length - 1
-    }
-    wx.showLoading({
-      title: '稍等',
-    })
-    let songmid = myPlayer.playingList.willPlay[myPlayer.playingList.index].mid
-    this.setPlayer(songmid)
+    this.setPlayer(myPlayer.pre())
 
   },
   next() {
-    if (this.data.mode === "random") {
-      this.random()
-    } else {
-      myPlayer.playingList.index += 1
-      if (myPlayer.playingList.index > myPlayer.playingList.willPlay.length - 1) {
-        myPlayer.playingList.index = 0
-      }
-    }
-    wx.showLoading({
-      title: '稍等',
-    })
-    let songmid = myPlayer.playingList.willPlay[myPlayer.playingList.index].mid ||
-      myPlayer.playingList.willPlay[myPlayer.playingList.index].songmid
-    this.setPlayer(songmid)
+    this.setPlayer(myPlayer.next())
+
   },
-
-  setPlayer(songmid) {
-    wx.request({
-      url: app.globalData.api.dev + `/song?songmid=${songmid}`,
-      success: (res) => {
-        wx.request({
-          url: app.globalData.api.dev + `/song/urls?id=${songmid}`,
-          success: url => {
-            if (JSON.stringify(url.data.data) == "{}") {
-              wx.showToast({
-                title: '歌曲需要开通绿钻或者购买',
-                icon: 'none',
-                duration: 2000
-              })
-              myPlayer.playingList.index += 1
-              this.next()
-              return
-            }
-            myPlayer.init(res.data.data.track_info, url.data.data[songmid])
-            myPlayer.playingList.isPlaying = res.data.data,
-            this.getLyric()
-              wx.hideLoading({
-                success: () => {
-                  wx.setNavigationBarTitle({
-                    title: myPlayer.backgroundAudioManager.title
-                  })
-                  this.setData({
-                    playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${myPlayer.playingList.isPlaying.track_info.album.mid}.jpg`
-                  })
-                }
-              })
-          },
-          fail: error => {
-            wx.showToast({
-              title: '接口错误',
-              icon: 'fail',
-              duration: 2000
-            })
-          }
-        })
-
-      }
-    })
-  },
-
   changeMode() {
-    let modeIndex = mode.findIndex(item => item === this.data.mode)
-    if (modeIndex < 3) {
-      modeIndex += 1
-      if (modeIndex === 3) {
-        modeIndex = 0
-      }
-    }
-    myPlayerwe.mode = mode[modeIndex]
+    myPlayer.changeMode()
     this.setData({
-      mode: mode[modeIndex]
-    })
-  },
-  getLyric() {
-    wx.request({
-      url: app.globalData.api.dev + `/lyric?songmid=${myPlayer.playingList.isPlaying.track_info.mid}`,
-      success: res => {
-        let lyric = res.data.data.lyric.match(/^\[\d{2}:\d{2}.\d{2}](.+)$/gm)
-        this.setData({
-          lyric: lyric,
-          lyricShow: lyric.map(item => item.slice(10))
-        })
-      }
+      mode: myPlayer.mode
     })
   },
   lyricTime(lyric) { //返回歌词显示的时间
@@ -303,7 +174,7 @@ Page({
   },
   scrollLyric() {
     //当前播放的时间
-    let currentTime = Math.round(myPlayer.backgroundAudioManager.currentTime)
+    let currentTime = Math.round(myPlayer.__.currentTime)
     for (let i = 0; i < this.data.lyric.length; i++) {
       if (this.lyricTime(this.data.lyric[i]) <= currentTime && (!this.data.lyric[i + 1] || this.lyricTime(this.data.lyric[i + 1]) >= currentTime)) {
         this.setData({
@@ -314,5 +185,63 @@ Page({
       }
 
     }
+  },
+  setPlayer(songmid) { 
+    wx.request({ 
+      url: app.globalData.api.dev + `/song?songmid=${songmid}`, 
+      success: (res) => { 
+        wx.request({ 
+          url: app.globalData.api.dev + `/song/urls?id=${songmid}`, 
+          success: url => { 
+            if (JSON.stringify(url.data.data) == "{}") { 
+              wx.showToast({ 
+                title: '歌曲需要开通绿钻或者购买', 
+                icon: 'none', 
+                duration: 2000 
+              }) 
+              myPlayer.playingList.index += 1 
+              this.next() 
+              return 
+            } 
+            myPlayer.init(songmid) 
+            myPlayer.playingList.isPlaying = res.data.data, 
+              this.setData({
+                lyric: myPlayer.lyric.lyric,
+                lyricShow: myPlayer.lyric.lyricShow
+              })
+              wx.hideLoading({ 
+                success: () => { 
+                  this.getLyric()
+                  this.setData({ 
+                    playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${myPlayer.playingList.isPlaying.track_info.album.mid}.jpg` 
+                  }) 
+                } 
+              }) 
+          }, 
+          fail: error => { 
+            wx.showToast({ 
+              title: '接口错误', 
+              icon: 'fail', 
+              duration: 2000 
+            }) 
+          } 
+        }) 
+ 
+      } 
+    })
+  },
+  getLyric(){
+    wx.request({
+      url: app.globalData.api.dev + `/lyric?songmid=${myPlayer.playingList.isPlaying.track_info.mid}`,
+      success: res => {
+        let lyric = res.data.data.lyric.match(/^\[\d{2}:\d{2}.\d{2}](.+)$/gm)
+        myPlayer.lyric.lyric=  lyric,
+        myPlayer.lyric.lyricShow = lyric.map(item => item.slice(10))
+        this.setData({
+          lyric:lyric,
+          lyricShow:lyric.map(item => item.slice(10))
+        })
+      }
+    })
   }
 })
