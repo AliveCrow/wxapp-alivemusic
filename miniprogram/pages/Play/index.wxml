@@ -25,7 +25,12 @@
         <text class="player-font iconfont iconPlayerpause" bindtap="pause" style="color:#fff" wx:else></text>
         <text bindtap="next" class="player-font iconfont iconPlayernext " style="color:#fff"></text>
       </view>
-      <view></view>
+      <view>
+        <text bindtap="belike" wx:if="{{!like}}" class="player-like iconfont iconlike " style="color:#fff"></text>
+        <text bindtap="cancalike" wx:else class="player-like iconfont iconliked " style="color:#fff"></text>
+
+
+      </view>
     </view>
   </view>
 </view>

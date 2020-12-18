@@ -1,7 +1,9 @@
 // pages/Play/index.js
 const app = getApp()
 let mode = ["random", "loop", "normal"]
-let myPlayer 
+let myPlayer
+const db = wx.cloud.database()
+
 Page({
 
   /**
@@ -9,15 +11,13 @@ Page({
    */
   data: {
     mode: 'normal',
-    updateId: null,
-    currentTime: "00:00",
-    duration: "00:00",
     songData: {},
     playerBgc: String,
-    // backgroundAudioManager: {},
     paused: true,
-    move: false,
     seek: false,
+    like:false,
+    currentTime:"00:00",
+    duration:"00:00",
     value: Number,
     progress: {
       value: Number,
@@ -60,6 +60,7 @@ Page({
   onShow: function () {
     this.init()
     this.getLyric()
+    this.likeStatus()
     this.setData({
       paused: myPlayer.isPaused,
     })
@@ -88,7 +89,6 @@ Page({
         paused: myPlayer.isPaused,
         ['progress.value']: myPlayer.progress.value,
         ['progress.max']: myPlayer.progress.max,
-        move: true
       })
     })
     myPlayer.__.onTimeUpdate(() => {
@@ -211,5 +211,36 @@ Page({
         })
       }
     })
+  },
+  likeStatus(){
+    if(!app.globalData.logined) return ;
+    console.log('like');
+    wx.login({
+      timeout: 3000,
+      success:login=>{
+        wx.request({
+          url: `https://api.weixin.qq.com/sns/jscode2session?appid=wxcd6a5a953f46432a&secret=c089429b6f74f9251d0ed36f7c770f11&js_code=${login.code}&grant_type=authorization_code`,
+          success:res=>{
+            db.collection('LikeSongs').where({
+              _openid:res.data.openid
+            }).get().then(res=>{
+              let like =  res.data[0].songmid.findIndex(item=>item.songmid==myPlayer.playingList.isPlaying.track_info.mid)
+              if(like !== -1){
+                this.setData({
+                  like:true
+                })
+              }
+            })
+          }
+        })
+      }
+    })
+   
+  },
+  belike(){
+
+  },
+  cancallike(){
+
   }
 })

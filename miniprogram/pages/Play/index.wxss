@@ -55,6 +55,9 @@
 .player-font{
   font-size:40px;
 }
+.player-like{
+  font-size: 24px;
+}
 .iconPlayerplay,.iconPlayerpause{
   margin: 0 20px;
 }

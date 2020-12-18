@@ -30,14 +30,16 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.init()
+  
+  },
+  init(){
     wx.checkSession({
       success: (res) => {
         this.getUserInfo()
@@ -72,6 +74,10 @@ Page({
             })
           })
         })
+        .then(()=>{
+          wx.hideLoading({
+          })
+        })
       },
       fail:err=>{
         wx.showToast({
@@ -90,41 +96,6 @@ Page({
     })
 
   },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
   getUserInfo() {
     return new Promise((resolve, reject) => {
       wx.getUserInfo({
@@ -141,6 +112,7 @@ Page({
                     logined: true,
                     openid:openid.data.openid
                   })
+                  app.globalData.logined = true
                   resolve(openid.data)
                 }
               })
@@ -204,13 +176,14 @@ Page({
    }else{
     wx.showLoading({
     })
-    this.getUserInfo().then((res) => {
-      wx.hideLoading({
-        success: () => {
-          this.createUserTable(res.openid)
-        },
-      })
-    })
+    this.init()
+    // this.getUserInfo().then((res) => {
+    //   wx.hideLoading({
+    //     success: () => {
+    //       this.createUserTable(res.openid)
+    //     },
+    //   })
+    // })
   
    }
 
