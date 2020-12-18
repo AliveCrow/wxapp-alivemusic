@@ -17,7 +17,7 @@
     "checkInvalidKey": true,
     "checkSiteMap": true,
     "uploadWithSourceMap": true,
-    "compileHotReLoad": false,
+    "compileHotReLoad": true,
     "useMultiFrameRuntime": false,
     "useApiHook": true,
     "babelSetting": {
@@ -86,6 +86,12 @@
         {
           "name": "pages/User/index/index",
           "pathName": "pages/User/index/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/User/like/list/index",
+          "pathName": "pages/User/like/list/index",
           "scene": null
         }
       ]

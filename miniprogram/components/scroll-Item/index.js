@@ -20,6 +20,11 @@ Component({
     moved: function () { },
     detached: function () { },
   },
+  pageLifetimes:{
+    show:function(){
+      console.log('233');
+    }
+  },
   /**
    * 组件的方法列表
    */

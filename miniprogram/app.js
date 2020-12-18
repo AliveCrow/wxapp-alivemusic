@@ -14,6 +14,7 @@ App({
 
     this.globalData = {
       api:api,
+      logined:false,
       backgroundAudioManager:wx.getBackgroundAudioManager(),
       myPlayer:new Player(),
       playingList:{

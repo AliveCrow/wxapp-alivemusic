@@ -7,9 +7,13 @@
     "pages/more/index",
     "pages/rank/index",
     "pages/Play/index",
-    "pages/User/index/index"
+    "pages/User/index/index",
+    "pages/User/Login/index",
+    "pages/User/like/list/index"
   ],
-  "requiredBackgroundModes": ["audio"],
+  "requiredBackgroundModes": [
+    "audio"
+  ],
   "window": {
     "backgroundColor": "#F6F6F6",
     "backgroundTextStyle": "light",
@@ -25,13 +29,12 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "iconPath":"./assets/image/home.png",
+        "iconPath": "./assets/image/home.png",
         "selectedIconPath": "./assets/image/home-selected.png"
-
       },
       {
         "pagePath": "pages/User/index/index",
-        "iconPath":"./assets/image/user.png",
+        "iconPath": "./assets/image/user.png",
         "selectedIconPath": "./assets/image/user-selected.png"
       }
     ]

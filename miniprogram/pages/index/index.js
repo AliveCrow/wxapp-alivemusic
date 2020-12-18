@@ -113,7 +113,10 @@ Page({
   },
   detail(e){
     wx.navigateTo({
-      url: `/pages/songList/index?content_id=${e.currentTarget.dataset.content_id}`
+      url: `/pages/songList/index?content_id=${e.currentTarget.dataset.content_id}`,
+      success:r=>{
+        r.eventChannel.emit('wherefrom',{data:{},where:'home'})
+      }
     })
   },
   setList(e){

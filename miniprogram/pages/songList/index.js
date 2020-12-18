@@ -17,10 +17,24 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.setData({
-      list_id:options.content_id
+    const event =this.getOpenerEventChannel()
+    event.on('wherefrom',(res)=>{
+      if(res.where === "home"){
+        this.setData({
+          list_id:options.content_id
+        })
+        this.init()
+      }else if(res.where ==="user"){
+        this.setData({
+          title:'我喜欢',
+          desc: '收藏的音乐',
+          pic:res.pic,
+          songList:res.data
+        })
+      }
     })
-    this.init()
+
+
   },
 
   /**

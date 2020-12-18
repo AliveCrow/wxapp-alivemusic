@@ -1,0 +1,11 @@
+/* miniprogram/pages/User/like/list/index.wxss */
+.like-list-container{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin: 10px 0;
+}
+
+.item{
+}
