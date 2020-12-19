@@ -55,7 +55,6 @@ Component({
       myPlayer.init(songmid)
       myPlayer.playingList.willPlay = this.data.willPlay
       myPlayer.playingList.isPlaying = this.data.songData
-      console.log(this.data.willPlay);
       wx.showLoading({
         title: '稍等',
       })

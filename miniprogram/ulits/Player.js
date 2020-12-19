@@ -44,7 +44,7 @@ export default class Player {
 						let songData = res_SongData.data.data.track_info
 						this.__.title = songData.name
 						this.__.epname = songData.album.name
-						this.__.singer = songData.singer
+						this.__.singer = songData.singer[0].name
 						this.__.coverImgUrl = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${songData.album.mid}.jpg`
 						this.__.src = res_SongUrl.data.data[songmid]
 						wx.hideLoading({

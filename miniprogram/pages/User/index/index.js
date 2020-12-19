@@ -32,6 +32,8 @@ Page({
           this.setData({
             userInfo: app.globalData.userInfo,
             logined: app.globalData.logined,
+            likeSongBgc: 'http://qiniu.dreamsakula.top/images/20201218114049.jpg',
+            likeSongListBgc: 'http://qiniu.dreamsakula.top/images/20201218114206.jpg',
           })
           return
         }
@@ -77,7 +79,7 @@ Page({
 
         this.setData({
           userInfo: app.globalData.userInfo,
-          logined: app.globalData.logined
+          logined: app.globalData.logined,
         })
 
       }
