@@ -3,6 +3,7 @@ const app = getApp()
 let mode = ["random", "loop", "normal"]
 let myPlayer
 const db = wx.cloud.database()
+const _ = db.command
 
 Page({
 
@@ -15,9 +16,10 @@ Page({
     playerBgc: String,
     paused: true,
     seek: false,
-    like:false,
-    currentTime:"00:00",
-    duration:"00:00",
+    like: false,
+    currentTime: "00:00",
+    duration: "00:00",
+    updateId: null,
     value: Number,
     progress: {
       value: Number,
@@ -36,6 +38,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+
     myPlayer = app.globalData.myPlayer
     this.setData({
       playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${myPlayer.playingList.isPlaying.track_info.album.mid}.jpg`,
@@ -50,7 +53,7 @@ Page({
   onReady: function () {
     wx.setNavigationBarTitle({
       title: myPlayer.__.title
-    }) 
+    })
     this.update()
   },
 
@@ -72,12 +75,12 @@ Page({
   },
 
   //初始player
-  init() { 
+  init() {
 
-    myPlayer.__.onPlay(()=>{  
+    myPlayer.__.onPlay(() => {
       wx.setNavigationBarTitle({
         title: myPlayer.__.title
-      }) 
+      })
       myPlayer.isPaused = false
       myPlayer.currentTime = this.formatTime(myPlayer.__.currentTime)
       myPlayer.duration = this.formatTime(myPlayer.__.duration)
@@ -105,7 +108,7 @@ Page({
     myPlayer.__.onEnded(() => {
       if (myPlayer.mode === "loop") {
         myPlayer.reset()
-        return 
+        return
       }
       this.next()
     })
@@ -134,11 +137,11 @@ Page({
   },
   update() {
     this.setData({
-      updateId:myPlayer.update(500,this)
+      updateId: myPlayer.update(500, this)
     })
   },
   seek(e) {
-    myPlayer.seek(e.detail.value,this)
+    myPlayer.seek(e.detail.value, this)
   },
   pre() {
     this.setPlayer(myPlayer.pre())
@@ -171,76 +174,105 @@ Page({
 
     }
   },
-  setPlayer(songmid) { 
-    myPlayer.reSetSong(songmid).then((res)=>{
-      myPlayer.init(songmid) 
-      myPlayer.playingList.isPlaying = res.res.data.data, 
+  setPlayer(songmid) {
+    myPlayer.reSetSong(songmid).then((res) => {
+      myPlayer.init(songmid)
+      myPlayer.playingList.isPlaying = res.res.data.data,
         this.setData({
           lyric: myPlayer.lyric.lyric,
           lyricShow: myPlayer.lyric.lyricShow
         })
-        wx.hideLoading({ 
-          success: () => { 
-            this.getLyric()
-            this.setData({ 
-              playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${myPlayer.playingList.isPlaying.track_info.album.mid}.jpg` 
-            }) 
-          } 
-        }) 
-    }).catch(error=>{
-      wx.showToast({ 
-        title: '歌曲需要开通绿钻或者购买', 
-        icon: 'none', 
-        duration: 2000 
-      }) 
-      myPlayer.playingList.index += 1 
-      this.next() 
+      wx.hideLoading({
+        success: () => {
+          this.getLyric()
+          this.setData({
+            playerBgc: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${myPlayer.playingList.isPlaying.track_info.album.mid}.jpg`
+          })
+        }
+      })
+    }).catch(error => {
+      wx.showToast({
+        title: '歌曲需要开通绿钻或者购买',
+        icon: 'none',
+        duration: 2000
+      })
+      myPlayer.playingList.index += 1
+      this.next()
     })
 
   },
-  getLyric(){
+  getLyric() {
     wx.request({
       url: app.globalData.api.dev + `/lyric?songmid=${myPlayer.playingList.isPlaying.track_info.mid}`,
       success: res => {
         let lyric = res.data.data.lyric.match(/^\[\d{2}:\d{2}.\d{2}](.+)$/gm)
-        myPlayer.lyric.lyric=  lyric,
-        myPlayer.lyric.lyricShow = lyric.map(item => item.slice(10))
+        myPlayer.lyric.lyric = lyric,
+          myPlayer.lyric.lyricShow = lyric.map(item => item.slice(10))
         this.setData({
-          lyric:lyric,
-          lyricShow:lyric.map(item => item.slice(10))
+          lyric: lyric,
+          lyricShow: lyric.map(item => item.slice(10))
         })
       }
     })
   },
-  likeStatus(){
-    if(!app.globalData.logined) return ;
-    console.log('like');
-    wx.login({
-      timeout: 3000,
-      success:login=>{
-        wx.request({
-          url: `https://api.weixin.qq.com/sns/jscode2session?appid=wxcd6a5a953f46432a&secret=c089429b6f74f9251d0ed36f7c770f11&js_code=${login.code}&grant_type=authorization_code`,
-          success:res=>{
-            db.collection('LikeSongs').where({
-              _openid:res.data.openid
-            }).get().then(res=>{
-              let like =  res.data[0].songmid.findIndex(item=>item.songmid==myPlayer.playingList.isPlaying.track_info.mid)
-              if(like !== -1){
-                this.setData({
-                  like:true
-                })
-              }
-            })
-          }
+  likeStatus() {
+    if (!app.globalData.logined) return;
+
+    db.collection('LikeSongs').where({
+      _openid: app.globalData.openid
+    }).get().then(res => {
+      let like = res.data[0].songmid.findIndex(item => item.songmid == myPlayer.playingList.isPlaying.track_info.mid)
+      if (like !== -1) {
+        this.setData({
+          like: true
         })
       }
     })
-   
-  },
-  belike(){
 
   },
-  cancallike(){
+  
+  changeLike() {
 
-  }
+    if (!app.globalData.logined) {
+      wx.showToast({
+        title: '请登录',
+      })
+      return
+    }
+    if(this.data.like){
+      this.setData({
+        like: false
+      })
+
+      db.collection('LikeSongs').where({
+        _openid:app.globalData.openid
+      }).update({
+        data: {
+          songmid: _.pull({
+            name: myPlayer.playingList.isPlaying.track_info.name,
+            songmid: myPlayer.playingList.isPlaying.track_info.mid
+          })
+
+        }
+      })
+
+    }else{
+      this.setData({
+        like: true
+      })
+
+      db.collection('LikeSongs').where({
+        _openid:app.globalData.openid
+      }).update({
+        data: {
+          songmid: _.push({
+            name: myPlayer.playingList.isPlaying.track_info.name,
+            songmid: myPlayer.playingList.isPlaying.track_info.mid
+          })
+        }
+      })
+    }
+
+
+  },
 })

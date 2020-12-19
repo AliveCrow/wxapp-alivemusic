@@ -6,6 +6,11 @@
       <text class="song-list-title">{{title}}</text>
       <rich-text bindtap="showDesc" class="song-list-dec" nodes="{{desc}}"></rich-text>
     </view>
+    <view class="like-song-list" bindtap="changeLike" hidden="{{title==='我喜欢'}}">
+      收藏歌单
+        <text  wx:if="{{!like}}" class="player-like iconfont iconlike " style="color:#fff"></text>
+        <text wx:else class="player-like iconfont iconliked " style="color:#fff"></text>
+    </view>
   </view>
   <songItem wx:for="{{songList}}" willPlay="{{songList}}" wx:key='index' songmid='{{item.songmid||item.mid}}'></songItem>
 </view>

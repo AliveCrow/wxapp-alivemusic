@@ -8,14 +8,14 @@ Page({
   data: {
     hotList: [],
     rank: [],
-    isPlaying:false
+    isPlaying: false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
- 
+
     let _this = this
     //推荐歌曲
     wx.request({
@@ -54,19 +54,39 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
+
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    if(app.globalData.myPlayer!==null){
-      if(!app.globalData.myPlayer.isPaused){
+    if (app.globalData.myPlayer !== null) {
+      if (!app.globalData.myPlayer.isPaused) {
         this.setData({
-          isPlaying:true
+          isPlaying: true
         })
       }
     }
+    //检查是否授权
+    wx.getSetting({
+      success: res => {
+        if (!res.authSetting["scope.userInfo"]) {
+          console.log('尚未登录');
+        } else {
+          wx.checkSession({
+            success: (res) => {
+
+            },
+            fail: error => {
+              return 
+            }
+          })
+        
+        }
+      }
+    })
+
   },
 
   /**
@@ -111,15 +131,15 @@ Page({
       url: '/pages/search/index',
     })
   },
-  detail(e){
+  detail(e) {
     wx.navigateTo({
-      url: `/pages/songList/index?content_id=${e.currentTarget.dataset.content_id}`,
-      success:r=>{
-        r.eventChannel.emit('wherefrom',{data:{},where:'home'})
+      url: `/pages/songList/index?content_id=${e.currentTarget.dataset.content_id}&num=${e.currentTarget.dataset.num}`,
+      success: r => {
+        r.eventChannel.emit('wherefrom', { data: {}, where: 'home' })
       }
     })
   },
-  setList(e){
+  setList(e) {
 
     // myPlayer.playingList.willPlay = this.data.songRecommend
     // app.globalData.playingList.willPlay=this.data.songRecommend

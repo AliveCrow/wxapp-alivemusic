@@ -71,5 +71,13 @@ Page({
    */
   onShareAppMessage: function () {
 
-  }
+  },
+  detail(e) {
+    wx.navigateTo({
+      url: `/pages/songList/index?content_id=${e.currentTarget.dataset.content_id}&num=${e.currentTarget.dataset.num}`,
+      success: r => {
+        r.eventChannel.emit('wherefrom', { data: {}, where: 'home' })
+      }
+    })
+  },
 })

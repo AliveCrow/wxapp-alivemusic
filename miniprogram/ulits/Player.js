@@ -101,7 +101,7 @@ export default class Player {
 		this.playingList.index = (this.playingList.willPlay.findIndex(item => this.playingList.isPlaying.track_info.mid === item.mid || this.playingList.isPlaying.track_info.mid === item.songmid))
 	}
 	update(time = 500, _this) {
-		this.updateId = setInterval(() => {
+		return this.updateId = setInterval(() => {
 			this.currentTime = this.formatTime(this.__.currentTime)
 			this.duration = this.formatTime(this.__.duration)
 			this.progress.value = Math.round(this.__.currentTime)

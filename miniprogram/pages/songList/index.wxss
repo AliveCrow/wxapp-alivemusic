@@ -59,3 +59,11 @@
   -webkit-line-clamp: 1;
   overflow: hidden;
 }
+
+.like-song-list{
+  position: absolute;
+  bottom: 14px;
+  text-align: center;
+  width: 100%;
+  color: #fff;
+}

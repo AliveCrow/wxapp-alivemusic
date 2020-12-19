@@ -9,7 +9,7 @@
 		<!-- 热门歌单 -->
 		<vx-title url='/pages/more/index'>热门歌单</vx-title>
 		<scroll-view enhanced='true' show-scrollbar='true' class="scroll-view-x" scroll-x='true'>
-			<blockquote wx:for='{{hotList}}' wx:key="index" bindtap="detail" data-content_id="{{item.content_id}}">
+			<blockquote wx:for='{{hotList}}' wx:key="index" bindtap="detail" data-num="{{item.listen_num}}"  data-content_id="{{item.content_id}}">
 				<scrollItem content='{{item}}'></scrollItem>
 			</blockquote>
 		</scroll-view>

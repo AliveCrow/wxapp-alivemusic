@@ -1,6 +1,6 @@
 <!--miniprogram/pages/User/like/list/index.wxml-->
 <view class="like-list-container">
-  <blockquote class="item" wx:for='{{likeLists}}' wx:key="index" bindtap="detail" data-content_id="{{item.songlist_id}}">
+  <blockquote class="item" wx:for='{{likeLists}}' wx:key="index" bindtap="detail" data-num="{{item.listen_num}}"  data-content_id="{{item.songlist_id}}">
 				<scrollItem content='{{item}}'></scrollItem>
   </blockquote>
 </view>

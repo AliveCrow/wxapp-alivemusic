@@ -26,8 +26,8 @@
         <text bindtap="next" class="player-font iconfont iconPlayernext " style="color:#fff"></text>
       </view>
       <view>
-        <text bindtap="belike" wx:if="{{!like}}" class="player-like iconfont iconlike " style="color:#fff"></text>
-        <text bindtap="cancalike" wx:else class="player-like iconfont iconliked " style="color:#fff"></text>
+        <text bindtap="changeLike" wx:if="{{!like}}" class="player-like iconfont iconlike " style="color:#fff"></text>
+        <text bindtap="changeLike" wx:else class="player-like iconfont iconliked " style="color:#fff"></text>
 
 
       </view>
